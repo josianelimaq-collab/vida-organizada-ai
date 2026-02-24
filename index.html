@@ -151,7 +151,62 @@ mostrarFilhos();
 if("serviceWorker" in navigator){
 navigator.serviceWorker.register("sw.js");
 }
+// ===== ASSISTENTE INTELIGENTE =====
 
+function mensagemAssistente(){
+
+let hora = new Date().getHours();
+let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+
+let total = gastos.reduce((a,b)=>a+b,0);
+
+let mensagem = "";
+
+if(hora < 12){
+mensagem = "🌞 Bom dia! Comece pelo essencial, não pela perfeição.";
+}
+else if(hora < 18){
+mensagem = "🌤️ Tarde produtiva leve. Faça apenas 1 tarefa importante.";
+}
+else{
+mensagem = "🌙 Hora de desacelerar. Você já fez o suficiente hoje.";
+}
+
+// previsão financeira simples
+if(total > 1000){
+mensagem += " 💰 Atenção: gastos altos este mês. Melhor economizar hoje.";
+}
+
+// detectar sobrecarga
+let hoje = new Date().getDay();
+if(hoje == 3 || hoje == 4){
+mensagem += " 🤍 Meio da semana detectado — reduza expectativas.";
+}
+
+mostrarAssistente(mensagem);
+}
+
+function mostrarAssistente(msg){
+
+let box = document.createElement("div");
+box.style.position="fixed";
+box.style.bottom="20px";
+box.style.left="20px";
+box.style.right="20px";
+box.style.background="#6c8cff";
+box.style.color="white";
+box.style.padding="15px";
+box.style.borderRadius="12px";
+box.style.boxShadow="0 5px 15px rgba(0,0,0,.2)";
+box.innerText = msg;
+
+document.body.appendChild(box);
+
+setTimeout(()=>{box.remove()},8000);
+}
+
+// executa sozinho
+setTimeout(mensagemAssistente,3000);
 </script>
 
 </body>
