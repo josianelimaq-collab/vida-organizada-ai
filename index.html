@@ -57,7 +57,10 @@ margin-top:5px;
 <header>🌸 Vida Organizada AI</header>
 
 <div class="container">
-
+<div class="card" id="painelAI">
+<h3>🤖 Copiloto Autônomo</h3>
+<p id="planoDia">Analisando seu dia...</p>
+</div>
 <div class="card">
 <h3>💰 Controle Financeiro</h3>
 <input id="valor" placeholder="Valor gasto">
@@ -207,6 +210,75 @@ setTimeout(()=>{box.remove()},8000);
 
 // executa sozinho
 setTimeout(mensagemAssistente,3000);
+// ===== COPILOTO AUTÔNOMO =====
+
+function analisarDia(){
+
+let hoje = new Date();
+let dia = hoje.getDay();
+
+let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+let total = gastos.reduce((a,b)=>a+b,0);
+
+let mensagem="";
+
+// energia da semana
+if(dia == 1){
+mensagem="🚀 Segunda leve: escolha apenas 1 prioridade.";
+}
+else if(dia == 3 || dia == 4){
+mensagem="🤍 Meio da semana detectado. Reduza cobranças.";
+}
+else if(dia == 6){
+mensagem="✨ Sábado ideal para organizar refeições.";
+}
+else{
+mensagem="🌙 Dia de manutenção da casa e descanso.";
+}
+
+// previsão financeira
+if(total > 800){
+mensagem += " 💰 Copiloto: melhor evitar compras hoje.";
+}
+
+// rotina automática
+mensagem += `
+\n\nPlano sugerido:
+🌞 Manhã → essencial da casa
+🌤️ Tarde → tarefa rápida
+🌙 Noite → desacelerar
+`;
+
+document.getElementById("planoDia").innerText = mensagem;
+
+gerarListaCompras();
+}
+
+// ===== LISTA AUTOMÁTICA =====
+
+function gerarListaCompras(){
+
+let cardapio = localStorage.getItem("cardapio") || "";
+
+let lista=[];
+
+if(cardapio.includes("frango")) lista.push("🍗 Frango");
+if(cardapio.includes("arroz")) lista.push("🍚 Arroz");
+if(cardapio.includes("ovo")) lista.push("🥚 Ovos");
+if(cardapio.includes("salada")) lista.push("🥬 Verduras");
+
+if(lista.length>0){
+
+let div=document.createElement("div");
+div.className="card";
+div.innerHTML="<h3>🛒 Lista automática</h3>"+lista.join("<br>");
+document.querySelector(".container").appendChild(div);
+
+}
+}
+
+// executa sozinho ao abrir
+window.onload = analisarDia;
 </script>
 
 </body>
