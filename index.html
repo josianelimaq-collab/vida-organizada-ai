@@ -9,47 +9,59 @@
 
 <style>
 body{
-font-family:Arial;
-background:#f3f6fb;
+font-family:system-ui,-apple-system;
+background:linear-gradient(180deg,#6c8cff,#f3f6fb);
 margin:0;
+color:#333;
 }
 
 header{
-background:#6c8cff;
+background:transparent;
 color:white;
-padding:15px;
 text-align:center;
-font-size:20px;
+padding:20px;
+font-size:22px;
+font-weight:bold;
 }
 
 .container{
 padding:15px;
+margin-top:-10px;
 }
 
 .card{
 background:white;
-padding:15px;
+padding:16px;
 margin-bottom:15px;
-border-radius:12px;
-box-shadow:0 4px 12px rgba(0,0,0,.1);
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,.12);
+animation:fade .4s ease;
 }
 
 button{
 background:#6c8cff;
-color:white;
 border:none;
-padding:10px;
-border-radius:8px;
+color:white;
+padding:12px;
+border-radius:10px;
 width:100%;
-margin-top:8px;
+font-size:15px;
 }
 
-input{
+input, textarea{
 width:100%;
-padding:8px;
-margin-top:5px;
+padding:10px;
+margin-top:6px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1}
 }
 </style>
+
 </head>
 
 <body>
@@ -278,7 +290,61 @@ document.querySelector(".container").appendChild(div);
 }
 
 // executa sozinho ao abrir
-window.onload = analisarDia;
+window.onload = function(){
+analisarDia();
+mostrarGrafico();
+notificacaoInteligente();
+};
+// ===== GRÁFICO FINANCEIRO =====
+
+function mostrarGrafico(){
+
+let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+let total = gastos.reduce((a,b)=>a+b,0);
+
+let div=document.createElement("div");
+div.className="card";
+
+let porcentagem = Math.min(total/1500*100,100);
+
+div.innerHTML=`
+<h3>📊 Gastos do mês</h3>
+<div style="background:#eee;border-radius:10px;height:20px;">
+<div style="
+width:${porcentagem}%;
+background:#6c8cff;
+height:20px;
+border-radius:10px;">
+</div>
+</div>
+<p>Total: R$ ${total}</p>
+`;
+
+document.querySelector(".container").appendChild(div);
+}
+// ===== NOTIFICAÇÕES =====
+
+function notificacaoInteligente(){
+
+if(Notification.permission !== "granted"){
+Notification.requestPermission();
+}
+
+setTimeout(()=>{
+
+new Notification("Vida Organizada AI 🌸",{
+body:"Lembrete gentil: faça apenas o essencial hoje 🤍"
+});
+
+},5000);
+
+}
+// ===== BACKUP AUTOMÁTICO =====
+
+setInterval(()=>{
+localStorage.setItem("backupVidaAI",
+JSON.stringify(localStorage));
+},30000);
 </script>
 
 </body>
