@@ -3,39 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 <title>Vida Organizada AI</title>
 
 <link rel="manifest" href="manifest.json">
 
 <style>
 body{
-font-family: Arial;
-background:#f4f6fb;
+font-family:Arial;
+background:#f3f6fb;
+margin:0;
+}
+
+header{
+background:#6c8cff;
+color:white;
+padding:15px;
 text-align:center;
-padding:40px;
+font-size:20px;
+}
+
+.container{
+padding:15px;
 }
 
 .card{
 background:white;
-padding:20px;
-border-radius:15px;
-box-shadow:0 5px 20px rgba(0,0,0,.1);
+padding:15px;
+margin-bottom:15px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,.1);
+}
+
+button{
+background:#6c8cff;
+color:white;
+border:none;
+padding:10px;
+border-radius:8px;
+width:100%;
+margin-top:8px;
+}
+
+input{
+width:100%;
+padding:8px;
+margin-top:5px;
 }
 </style>
 </head>
 
 <body>
 
+<header>🌸 Vida Organizada AI</header>
+
+<div class="container">
+
 <div class="card">
-<h1>🌸 Vida Organizada AI</h1>
-<p>Seu assistente inteligente familiar está ativo.</p>
+<h3>💰 Controle Financeiro</h3>
+<input id="valor" placeholder="Valor gasto">
+<button onclick="addGasto()">Adicionar gasto</button>
+<p>Total do mês: R$ <span id="total">0</span></p>
+</div>
+
+<div class="card">
+<h3>🎯 Meta Financeira</h3>
+<input id="meta" placeholder="Meta mensal">
+<button onclick="salvarMeta()">Salvar meta</button>
+<p id="metaTexto"></p>
+</div>
+
+<div class="card">
+<h3>🥗 Cardápio da Semana</h3>
+<textarea id="cardapio" placeholder="Digite seu cardápio semanal"></textarea>
+<button onclick="salvarCardapio()">Salvar cardápio</button>
+</div>
+
+<div class="card">
+<h3>👶 Perfis dos Filhos</h3>
+<input id="filho" placeholder="Nome do filho">
+<button onclick="addFilho()">Adicionar</button>
+<ul id="listaFilhos"></ul>
+</div>
+
+<div class="card">
+<h3>🌙 Modo Dia Caótico</h3>
+<button onclick="modoCaotico()">Ativar rotina simplificada</button>
+<p id="caos"></p>
+</div>
+
 </div>
 
 <script>
+
+let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+let filhos = JSON.parse(localStorage.getItem("filhos")) || [];
+
+function atualizarTotal(){
+let total = gastos.reduce((a,b)=>a+b,0);
+document.getElementById("total").innerText = total;
+}
+
+function addGasto(){
+let v = Number(document.getElementById("valor").value);
+gastos.push(v);
+localStorage.setItem("gastos",JSON.stringify(gastos));
+atualizarTotal();
+}
+
+function salvarMeta(){
+let meta = document.getElementById("meta").value;
+localStorage.setItem("meta",meta);
+document.getElementById("metaTexto").innerText =
+"Meta mensal: R$ "+meta;
+}
+
+function salvarCardapio(){
+localStorage.setItem(
+"cardapio",
+document.getElementById("cardapio").value
+);
+alert("Cardápio salvo!");
+}
+
+function addFilho(){
+let nome = document.getElementById("filho").value;
+filhos.push(nome);
+localStorage.setItem("filhos",JSON.stringify(filhos));
+mostrarFilhos();
+}
+
+function mostrarFilhos(){
+let lista=document.getElementById("listaFilhos");
+lista.innerHTML="";
+filhos.forEach(f=>{
+lista.innerHTML+=`<li>${f}</li>`;
+});
+}
+
+function modoCaotico(){
+document.getElementById("caos").innerText =
+"Hoje só o essencial: alimentar crianças, água, descanso e uma tarefa pequena ❤️";
+}
+
+atualizarTotal();
+mostrarFilhos();
+
 if("serviceWorker" in navigator){
 navigator.serviceWorker.register("sw.js");
 }
+
 </script>
 
 </body>
