@@ -1,0 +1,15 @@
+{
+"name":"Vida Organizada AI",
+"short_name":"VidaAI",
+"start_url":"/",
+"display":"standalone",
+"background_color":"#f4f6fb",
+"theme_color":"#f4f6fb",
+"icons":[
+{
+"src":"icon-192.png",
+"sizes":"192x192",
+"type":"image/png"
+}
+]
+}
