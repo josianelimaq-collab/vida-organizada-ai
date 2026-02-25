@@ -341,11 +341,34 @@ body:"Lembrete gentil: faça apenas o essencial hoje 🤍"
 }
 // ===== BACKUP AUTOMÁTICO =====
 
-setInterval(()=>{
-localStorage.setItem("backupVidaAI",
-JSON.stringify(localStorage));
-},30000);
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
+  console.log("Vida Organizada AI iniciado ✅");
+
+  // ===== BOTÃO ASSISTENTE =====
+  const botao = document.createElement("button");
+  botao.innerText = "💬 Falar com Assistente";
+  botao.style.position = "fixed";
+  botao.style.bottom = "20px";
+  botao.style.right = "20px";
+  botao.style.padding = "14px";
+  botao.style.borderRadius = "12px";
+  botao.style.border = "none";
+  botao.style.background = "#6c8cff";
+  botao.style.color = "white";
+  botao.style.fontSize = "16px";
+  botao.style.boxShadow = "0 4px 12px rgba(0,0,0,.2)";
+  botao.style.cursor = "pointer";
+
+  botao.onclick = function () {
+    alert("🤖 Assistente Vida Organizada AI ativo!");
+  };
+
+  document.body.appendChild(botao);
+
+});
 </script>
+
 </body>
 </html>
