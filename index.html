@@ -66,6 +66,21 @@ to{opacity:1}
 
 <body>
 
+<button onclick="abrirCardapio()" style="
+position:fixed;
+bottom:20px;
+right:20px;
+padding:12px 18px;
+border-radius:12px;
+background:#ff914d;
+color:white;
+border:none;
+font-size:16px;
+z-index:999;
+">
+🍽️ Cardápio
+</button>
+
 <header>🌸 Vida Organizada AI</header>
 
 <div class="container">
@@ -77,6 +92,7 @@ to{opacity:1}
 <h3>💰 Controle Financeiro</h3>
 <input id="valor" placeholder="Valor gasto">
 <button onclick="addGasto()">Adicionar gasto</button>
+<button onclick="abrirCardapio()">🍽️ Cardápio</button>
 <p>Total do mês: R$ <span id="total">0</span></p>
 </div>
 
@@ -366,6 +382,73 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+const diasSemana = [
+"Segunda","Terça","Quarta","Quinta",
+"Sexta","Sábado","Domingo"
+];
+
+function abrirCardapio(){
+ document.getElementById("cardapioTela").style.display="block";
+ carregarCardapio();
+}
+
+function fecharCardapio(){
+ document.getElementById("cardapioTela").style.display="none";
+}
+
+function carregarCardapio(){
+
+ const container = document.getElementById("cardapioContainer");
+ container.innerHTML="";
+
+ let dados = JSON.parse(localStorage.getItem("cardapioVidaAI")) || {};
+
+ diasSemana.forEach(dia=>{
+   container.innerHTML+=`
+   <div style="margin-bottom:10px">
+     <strong>${dia}</strong><br>
+     <input id="ref_${dia}" value="${dados[dia]||""}"
+     style="width:100%;padding:8px">
+   </div>`;
+ });
+}
+
+function salvarCardapio(){
+
+ let dados={};
+
+ diasSemana.forEach(dia=>{
+   dados[dia]=document.getElementById("ref_"+dia).value;
+ });
+
+ localStorage.setItem("cardapioVidaAI",JSON.stringify(dados));
+
+ alert("✅ Cardápio salvo!");
+}
 </script>
+
+<div id="cardapioTela" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:white;
+overflow:auto;
+padding:20px;
+z-index:1000;
+">
+
+<h2>🍽️ Cardápio da Semana</h2>
+
+<div id="cardapioContainer"></div>
+
+<br>
+<button onclick="salvarCardapio()">💾 Salvar</button>
+<button onclick="fecharCardapio()">Fechar</button>
+
+</div>
+
 </body>
 </html>
