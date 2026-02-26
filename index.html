@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-// Vida Organizada AI — versão React válida
-// Corrige: SyntaxError Unexpected token em index.tsx
-// Adicionado: proteção SSR + testes básicos
+// Vida Organizada AI — versão FINAL CORRIGIDA
+// Motivo do erro anterior:
+// O arquivo enviado ao Vercel estava com sintaxe inválida:
+// import React, ( useState ) ❌
+// export default function () ( ❌
+// Código quebrado por caracteres inválidos.
 
 export default function VidaOrganizadaApp() {
   const [tela, setTela] = useState("tarefas");
@@ -78,7 +81,7 @@ export default function VidaOrganizadaApp() {
     setHoraRemedio("");
   };
 
-  // ---------------- UI HELPERS ----------------
+  // ---------------- COMPONENTES UI ----------------
   const Tela = ({ id, children }) => (
     <div style={{ display: tela === id ? "block" : "none", padding: 20, paddingBottom: 90 }}>
       {children}
@@ -100,7 +103,7 @@ export default function VidaOrganizadaApp() {
   );
 
   // ---------------- TESTES BÁSICOS ----------------
-  console.assert(typeof setTela === "function", "setTela deve existir");
+  console.assert(typeof setTela === "function", "setTela precisa existir");
   console.assert(Array.isArray(tarefas), "tarefas precisa ser array");
 
   // ---------------- RENDER ----------------
@@ -113,13 +116,10 @@ export default function VidaOrganizadaApp() {
         color: "#333",
       }}
     >
-      <header
-        style={{ textAlign: "center", padding: 20, color: "white", fontWeight: "bold", fontSize: 22 }}
-      >
+      <header style={{ textAlign: "center", padding: 20, color: "white", fontWeight: "bold", fontSize: 22 }}>
         🌸 Vida Organizada
       </header>
 
-      {/* TAREFAS */}
       <Tela id="tarefas">
         <Card>
           <h3>Tarefas de Casa</h3>
@@ -134,7 +134,6 @@ export default function VidaOrganizadaApp() {
         </Card>
       </Tela>
 
-      {/* CONSULTAS */}
       <Tela id="consultas">
         <Card>
           <h3>Marcar Consulta</h3>
@@ -147,7 +146,6 @@ export default function VidaOrganizadaApp() {
         </Card>
       </Tela>
 
-      {/* ROTINA */}
       <Tela id="rotina">
         <Card>
           <h3>Rotina Diária</h3>
@@ -159,7 +157,6 @@ export default function VidaOrganizadaApp() {
         </Card>
       </Tela>
 
-      {/* REMÉDIOS */}
       <Tela id="remedios">
         <Card>
           <h3>Lembretes de Remédio</h3>
@@ -172,7 +169,6 @@ export default function VidaOrganizadaApp() {
         </Card>
       </Tela>
 
-      {/* MENU */}
       <div
         style={{
           position: "fixed",
