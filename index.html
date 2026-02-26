@@ -182,307 +182,14 @@ z-index:999;
 
 <script>
 
-let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
-let filhos = JSON.parse(localStorage.getItem("filhos")) || [];
-
-function atualizarTotal(){
-let total = gastos.reduce((a,b)=>a+b,0);
-document.getElementById("total").innerText = total;
-}
-
-function addGasto(){
-let v = Number(document.getElementById("valor").value);
-gastos.push(v);
-localStorage.setItem("gastos",JSON.stringify(gastos));
-atualizarTotal();
-}
-
-function salvarMeta(){
-let meta = document.getElementById("meta").value;
-localStorage.setItem("meta",meta);
-document.getElementById("metaTexto").innerText =
-"Meta mensal: R$ "+meta;
-}
-
-function salvarCardapio(){
-localStorage.setItem(
-"cardapio",
-document.getElementById("cardapio").value
-);
-alert("Cardápio salvo!");
-}
-
-function addFilho(){
-let nome = document.getElementById("filho").value;
-filhos.push(nome);
-localStorage.setItem("filhos",JSON.stringify(filhos));
-mostrarFilhos();
-}
-
-function mostrarFilhos(){
-let lista=document.getElementById("listaFilhos");
-lista.innerHTML="";
-filhos.forEach(f=>{
-lista.innerHTML+=`<li>${f}</li>`;
-});
-}
-
-function modoCaotico(){
-document.getElementById("caos").innerText =
-"Hoje só o essencial: alimentar crianças, água, descanso e uma tarefa pequena ❤️";
-}
-
-atualizarTotal();
-mostrarFilhos();
-
-if("serviceWorker" in navigator){
-navigator.serviceWorker.register("sw.js");
-}
-// ===== ASSISTENTE INTELIGENTE =====
-
-function mensagemAssistente(){
-
-let hora = new Date().getHours();
-let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
-
-let total = gastos.reduce((a,b)=>a+b,0);
-
-let mensagem = "";
-
-if(hora < 12){
-mensagem = "🌞 Bom dia! Comece pelo essencial, não pela perfeição.";
-}
-else if(hora < 18){
-mensagem = "🌤️ Tarde produtiva leve. Faça apenas 1 tarefa importante.";
-}
-else{
-mensagem = "🌙 Hora de desacelerar. Você já fez o suficiente hoje.";
-}
-
-// previsão financeira simples
-if(total > 1000){
-mensagem += " 💰 Atenção: gastos altos este mês. Melhor economizar hoje.";
-}
-
-// detectar sobrecarga
-let hoje = new Date().getDay();
-if(hoje == 3 || hoje == 4){
-mensagem += " 🤍 Meio da semana detectado — reduza expectativas.";
-}
-
-mostrarAssistente(mensagem);
-}
-
-function mostrarAssistente(msg){
-
-let box = document.createElement("div");
-box.style.position="fixed";
-box.style.bottom="20px";
-box.style.left="20px";
-box.style.right="20px";
-box.style.background="#6c8cff";
-box.style.color="white";
-box.style.padding="15px";
-box.style.borderRadius="12px";
-box.style.boxShadow="0 5px 15px rgba(0,0,0,.2)";
-box.innerText = msg;
-
-document.body.appendChild(box);
-
-setTimeout(()=>{box.remove()},8000);
-}
-
-// executa sozinho
-setTimeout(mensagemAssistente,3000);
-// ===== COPILOTO AUTÔNOMO =====
-
-function analisarDia(){
-
-let hoje = new Date();
-let dia = hoje.getDay();
-
-let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
-let total = gastos.reduce((a,b)=>a+b,0);
-
-let mensagem="";
-
-// energia da semana
-if(dia == 1){
-mensagem="🚀 Segunda leve: escolha apenas 1 prioridade.";
-}
-else if(dia == 3 || dia == 4){
-mensagem="🤍 Meio da semana detectado. Reduza cobranças.";
-}
-else if(dia == 6){
-mensagem="✨ Sábado ideal para organizar refeições.";
-}
-else{
-mensagem="🌙 Dia de manutenção da casa e descanso.";
-}
-
-// previsão financeira
-if(total > 800){
-mensagem += " 💰 Copiloto: melhor evitar compras hoje.";
-}
-
-// rotina automática
-mensagem += `
-\n\nPlano sugerido:
-🌞 Manhã → essencial da casa
-🌤️ Tarde → tarefa rápida
-🌙 Noite → desacelerar
-`;
-
-document.getElementById("planoDia").innerText = mensagem;
-
-gerarListaCompras();
-}
-
-// ===== LISTA AUTOMÁTICA =====
-
-function gerarListaCompras(){
-
-let cardapio = localStorage.getItem("cardapio") || "";
-
-let lista=[];
-
-if(cardapio.includes("frango")) lista.push("🍗 Frango");
-if(cardapio.includes("arroz")) lista.push("🍚 Arroz");
-if(cardapio.includes("ovo")) lista.push("🥚 Ovos");
-if(cardapio.includes("salada")) lista.push("🥬 Verduras");
-
-if(lista.length>0){
-
-let div=document.createElement("div");
-div.className="card";
-div.innerHTML="<h3>🛒 Lista automática</h3>"+lista.join("<br>");
-document.querySelector(".container").appendChild(div);
-
-}
-}
-
-// executa sozinho ao abrir
-window.onload = function(){
-analisarDia();
-mostrarGrafico();
-notificacaoInteligente();
-};
-// ===== GRÁFICO FINANCEIRO =====
-
-function mostrarGrafico(){
-
-let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
-let total = gastos.reduce((a,b)=>a+b,0);
-
-let div=document.createElement("div");
-div.className="card";
-
-let porcentagem = Math.min(total/1500*100,100);
-
-div.innerHTML=`
-<h3>📊 Gastos do mês</h3>
-<div style="background:#eee;border-radius:10px;height:20px;">
-<div style="
-width:${porcentagem}%;
-background:#6c8cff;
-height:20px;
-border-radius:10px;">
-</div>
-</div>
-<p>Total: R$ ${total}</p>
-`;
-
-document.querySelector(".container").appendChild(div);
-}
-// ===== NOTIFICAÇÕES =====
-
-function notificacaoInteligente(){
-
-if(Notification.permission !== "granted"){
-Notification.requestPermission();
-}
-
-setTimeout(()=>{
-
-new Notification("Vida Organizada AI 🌸",{
-body:"Lembrete gentil: faça apenas o essencial hoje 🤍"
-});
-
-},5000);
-
-}
-
-// ===== BACKUP AUTOMÁTICO =====
-
-document.addEventListener("DOMContentLoaded", function () {
-
-  console.log("Vida Organizada AI iniciado ✅");
-
-  const botao = document.createElement("button");
-  botao.innerText = "💬 Falar com Assistente";
-  botao.style.position = "fixed";
-  botao.style.bottom = "20px";
-  botao.style.right = "20px";
-  botao.style.padding = "14px";
-  botao.style.borderRadius = "12px";
-  botao.style.border = "none";
-  botao.style.background = "#6c8cff";
-  botao.style.color = "white";
-  botao.style.fontSize = "16px";
-
-  botao.onclick = function () {
-    alert("🤖 Assistente Vida Organizada AI ativo!");
-  };
-
-  document.body.appendChild(botao);
-
-});
+/* ===== DADOS ===== */
 
 const diasSemana = [
-"Segunda","Terça","Quarta","Quinta",
-"Sexta","Sábado","Domingo"
+"Segunda","Terça","Quarta",
+"Quinta","Sexta","Sábado","Domingo"
 ];
 
-function abrirCardapio(){
- document.getElementById("cardapioTela").style.display="block";
- carregarCardapio();
-}
-
-function fecharCardapio(){
- document.getElementById("cardapioTela").style.display="none";
-}
-
-function carregarCardapio(){
-
- const container = document.getElementById("cardapioContainer");
- container.innerHTML="";
-
- let dados = JSON.parse(localStorage.getItem("cardapioVidaAI")) || {};
-
- diasSemana.forEach(dia=>{
-   container.innerHTML+=`
-   <div style="margin-bottom:10px">
-     <strong>${dia}</strong><br>
-     <input id="ref_${dia}" value="${dados[dia]||""}"
-     style="width:100%;padding:8px">
-   </div>`;
- });
-}
-
-function salvarCardapio(){
-
- let dados={};
-
- diasSemana.forEach(dia=>{
-   dados[dia]=document.getElementById("ref_"+dia).value;
- });
-
- localStorage.setItem("cardapioVidaAI",JSON.stringify(dados));
-
- alert("✅ Cardápio salvo!");
-}
-
-/* ===== NAVEGAÇÃO DO APP ===== */
+/* ===== NAVEGAÇÃO ===== */
 
 function trocarTela(nome){
 
@@ -495,31 +202,30 @@ document.getElementById("tela"+nome)
 if(nome==="Cardapio"){
 carregarCardapio();
 }
+
 }
 
 /* ===== CARDÁPIO INTELIGENTE ===== */
-
-const diasSemana=[
-"Segunda","Terça","Quarta",
-"Quinta","Sexta","Sábado","Domingo"
-];
 
 function carregarCardapio(){
 
 const container=document.getElementById("cardapioContainer");
 container.innerHTML="";
 
-let dados=JSON.parse(localStorage.getItem("cardapioVidaAI"))||{};
+let dados=JSON.parse(
+localStorage.getItem("cardapioVidaAI")
+)||{};
 
 diasSemana.forEach(dia=>{
 container.innerHTML+=`
-<div>
+<div class="card">
 <strong>${dia}</strong>
 <input id="ref_${dia}"
 placeholder="Digite a refeição..."
 value="${dados[dia]||""}">
 </div>`;
 });
+
 }
 
 function salvarCardapio(){
@@ -536,7 +242,15 @@ JSON.stringify(dados)
 );
 
 alert("✅ Cardápio salvo!");
+
 }
+
+/* ===== INICIALIZAÇÃO ===== */
+
+window.onload=function(){
+console.log("Vida Organizada AI iniciado ✅");
+};
+
 </script>
 
 <div id="cardapioTela" style="
