@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vida Organizada AI</title>
+
+<style>
+body{
+font-family:system-ui;
+margin:0;
+background:linear-gradient(180deg,#6c8cff,#f3f6fb);
+}
+
+header{
+color:white;
+text-align:center;
+padding:20px;
+font-size:22px;
+font-weight:bold;
+}
+
+.card{
+background:white;
+margin:15px;
+padding:15px;
+border-radius:16px;
+box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+
+.menu{
+position:fixed;
+bottom:0;
+width:100%;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px;
+border-top:1px solid #ddd;
+}
+</style>
+</head>
+
+<body>
+
+<header>🌸 Vida Organizada</header>
+
+<div class="card">
+<h3>Tarefas</h3>
+<input id="tarefa">
+<button onclick="add()">Adicionar</button>
+<div id="lista"></div>
+</div>
+
+<div class="menu">
+<button>🏠</button>
+<button>📅</button>
+<button>🧠</button>
+<button>💊</button>
+</div>
+
+<script>
+let tarefas = JSON.parse(localStorage.getItem("tarefas")||"[]");
+
+function render(){
+lista.innerHTML="";
+tarefas.forEach(t=>{
+lista.innerHTML+=`<div>${t}</div>`;
+});
+}
+
+function add(){
+const v=tarefa.value;
+if(!v) return;
+tarefas.push(v);
+localStorage.setItem("tarefas",JSON.stringify(tarefas));
+tarefa.value="";
+render();
+}
+
+render();
+</script>
+
+</body>
+</html>
