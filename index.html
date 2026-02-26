@@ -1,262 +1,210 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vida Organizada AI</title>
+import React, { useState, useEffect } from "react";
 
-<!-- IMPORTANTE: Arquivo deve ser aberto como HTML (.html) e NÃO .tsx -->
+// ✅ Este arquivo agora é um componente React válido (JSX)
+// Corrige o erro: Unexpected token em index.tsx
 
-<style>
-.tela{display:none;padding:20px;padding-bottom:80px;}
-.tela.ativa{display:block;}
+export default function VidaOrganizadaApp() {
+  const [tela, setTela] = useState("tarefas");
 
-.menuApp{
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-background:#ffffff;
-border-top:1px solid #ddd;
-display:flex;
-justify-content:space-around;
-padding:10px;
+  // ---------- STORAGE HELPERS ----------
+  const carregar = (chave) => {
+    try {
+      const data = localStorage.getItem(chave);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const salvar = (chave, dados) => {
+    localStorage.setItem(chave, JSON.stringify(dados));
+  };
+
+  // ---------- STATES ----------
+  const [tarefas, setTarefas] = useState(() => carregar("tarefas"));
+  const [consultas, setConsultas] = useState(() => carregar("consultas"));
+  const [rotinas, setRotinas] = useState(() => carregar("rotinas"));
+  const [remedios, setRemedios] = useState(() => carregar("remedios"));
+
+  const [novaTarefa, setNovaTarefa] = useState("");
+  const [nomeConsulta, setNomeConsulta] = useState("");
+  const [dataConsulta, setDataConsulta] = useState("");
+  const [rotinaTexto, setRotinaTexto] = useState("");
+  const [nomeRemedio, setNomeRemedio] = useState("");
+  const [horaRemedio, setHoraRemedio] = useState("");
+
+  // ---------- EFFECTS (persistência) ----------
+  useEffect(() => salvar("tarefas", tarefas), [tarefas]);
+  useEffect(() => salvar("consultas", consultas), [consultas]);
+  useEffect(() => salvar("rotinas", rotinas), [rotinas]);
+  useEffect(() => salvar("remedios", remedios), [remedios]);
+
+  // ---------- ACTIONS ----------
+  const addTarefa = () => {
+    if (!novaTarefa.trim()) return;
+    setTarefas([...tarefas, novaTarefa]);
+    setNovaTarefa("");
+  };
+
+  const removerTarefa = (i) => {
+    setTarefas(tarefas.filter((_, idx) => idx !== i));
+  };
+
+  const addConsulta = () => {
+    if (!nomeConsulta || !dataConsulta) return;
+    setConsultas([...consultas, { nome: nomeConsulta, data: dataConsulta }]);
+    setNomeConsulta("");
+    setDataConsulta("");
+  };
+
+  const addRotina = () => {
+    if (!rotinaTexto.trim()) return;
+    setRotinas([...rotinas, rotinaTexto]);
+    setRotinaTexto("");
+  };
+
+  const addRemedio = () => {
+    if (!nomeRemedio || !horaRemedio) return;
+    setRemedios([...remedios, { nome: nomeRemedio, hora: horaRemedio }]);
+    setNomeRemedio("");
+    setHoraRemedio("");
+  };
+
+  // ---------- COMPONENTES ----------
+  const Card = ({ children }) => (
+    <div className="bg-white p-4 mb-4 rounded-2xl shadow">
+      {children}
+    </div>
+  );
+
+  const TelaTarefas = () => (
+    <Card>
+      <h3 className="font-bold mb-2">Tarefas de Casa</h3>
+      <input
+        className="input"
+        value={novaTarefa}
+        onChange={(e) => setNovaTarefa(e.target.value)}
+        placeholder="Adicionar tarefa..."
+      />
+      <button className="acao" onClick={addTarefa}>Adicionar</button>
+      {tarefas.map((t, i) => (
+        <div key={i} className="lista-item">
+          {t}
+          <button onClick={() => removerTarefa(i)}>❌</button>
+        </div>
+      ))}
+    </Card>
+  );
+
+  const TelaConsultas = () => (
+    <Card>
+      <h3 className="font-bold mb-2">Marcar Consulta</h3>
+      <input
+        className="input"
+        placeholder="Nome da consulta"
+        value={nomeConsulta}
+        onChange={(e) => setNomeConsulta(e.target.value)}
+      />
+      <input
+        className="input"
+        type="date"
+        value={dataConsulta}
+        onChange={(e) => setDataConsulta(e.target.value)}
+      />
+      <button className="acao" onClick={addConsulta}>Salvar</button>
+      {consultas.map((c, i) => (
+        <div key={i}>{c.nome} - {c.data}</div>
+      ))}
+    </Card>
+  );
+
+  const TelaRotina = () => (
+    <Card>
+      <h3 className="font-bold mb-2">Rotina Diária</h3>
+      <input
+        className="input"
+        placeholder="Nova rotina"
+        value={rotinaTexto}
+        onChange={(e) => setRotinaTexto(e.target.value)}
+      />
+      <button className="acao" onClick={addRotina}>Adicionar</button>
+      {rotinas.map((r, i) => (
+        <div key={i}>{r}</div>
+      ))}
+    </Card>
+  );
+
+  const TelaRemedios = () => (
+    <Card>
+      <h3 className="font-bold mb-2">Lembretes de Remédio</h3>
+      <input
+        className="input"
+        placeholder="Nome do remédio"
+        value={nomeRemedio}
+        onChange={(e) => setNomeRemedio(e.target.value)}
+      />
+      <input
+        className="input"
+        type="time"
+        value={horaRemedio}
+        onChange={(e) => setHoraRemedio(e.target.value)}
+      />
+      <button className="acao" onClick={addRemedio}>Adicionar</button>
+      {remedios.map((r, i) => (
+        <div key={i}>{r.nome} às {r.hora}</div>
+      ))}
+    </Card>
+  );
+
+  // ---------- TESTES BÁSICOS ----------
+  console.assert(Array.isArray(tarefas), "tarefas deve ser array");
+  console.assert(typeof setTela === "function", "setTela deve existir");
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-indigo-400 to-slate-100 pb-20">
+      <header className="text-center text-white text-xl font-bold p-5">
+        🌸 Vida Organizada
+      </header>
+
+      <div className="p-4">
+        {tela === "tarefas" && <TelaTarefas />}
+        {tela === "consultas" && <TelaConsultas />}
+        {tela === "rotina" && <TelaRotina />}
+        {tela === "remedios" && <TelaRemedios />}
+      </div>
+
+      <div className="fixed bottom-0 left-0 w-full bg-white border-t flex justify-around p-3 text-xl">
+        <button onClick={() => setTela("tarefas")}>🏠</button>
+        <button onClick={() => setTela("consultas")}>📅</button>
+        <button onClick={() => setTela("rotina")}>🧠</button>
+        <button onClick={() => setTela("remedios")}>💊</button>
+      </div>
+
+      <style>{`
+        .input{
+          width:100%;
+          padding:10px;
+          margin-top:5px;
+          margin-bottom:12px;
+          border-radius:8px;
+          border:1px solid #ccc;
+        }
+        .acao{
+          width:100%;
+          padding:12px;
+          border:none;
+          border-radius:10px;
+          background:#6c8cff;
+          color:white;
+          font-size:16px;
+          margin-bottom:10px;
+        }
+        .lista-item{
+          display:flex;
+          justify-content:space-between;
+          margin-bottom:8px;
+        }
+      `}</style>
+    </div>
+  );
 }
-
-.menuApp button{
-background:none;
-border:none;
-font-size:20px;
-cursor:pointer;
-}
-
-input{
-width:100%;
-padding:10px;
-margin-top:5px;
-margin-bottom:12px;
-border-radius:8px;
-border:1px solid #ccc;
-}
-
-button.acao{
-width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
-background:#6c8cff;
-color:white;
-font-size:16px;
-}
-
-body{
-font-family:system-ui,-apple-system;
-background:linear-gradient(180deg,#6c8cff,#f3f6fb);
-margin:0;
-color:#333;
-}
-
-header{
-background:transparent;
-color:white;
-text-align:center;
-padding:20px;
-font-size:22px;
-font-weight:bold;
-}
-
-.container{padding:15px;margin-top:-10px;}
-
-.card{
-background:white;
-padding:16px;
-margin-bottom:15px;
-border-radius:18px;
-box-shadow:0 4px 10px rgba(0,0,0,0.08);
-}
-
-.lista-item{
-display:flex;
-justify-content:space-between;
-margin-bottom:8px;
-}
-</style>
-</head>
-
-<body>
-
-<header>🌸 Vida Organizada</header>
-
-<!-- TAREFAS -->
-<div id="tarefas" class="tela ativa">
-<div class="container">
-<div class="card">
-<h3>Tarefas de Casa</h3>
-<input id="novaTarefa" placeholder="Adicionar tarefa...">
-<button class="acao" onclick="addTarefa()">Adicionar</button>
-<div id="listaTarefas"></div>
-</div>
-</div>
-</div>
-
-<!-- CONSULTAS -->
-<div id="consultas" class="tela">
-<div class="container">
-<div class="card">
-<h3>Marcar Consulta</h3>
-<input id="nomeConsulta" placeholder="Nome da consulta">
-<input type="date" id="dataConsulta">
-<button class="acao" onclick="addConsulta()">Salvar</button>
-<div id="listaConsultas"></div>
-</div>
-</div>
-</div>
-
-<!-- ROTINA -->
-<div id="rotina" class="tela">
-<div class="container">
-<div class="card">
-<h3>Rotina Diária</h3>
-<input id="rotinaTexto" placeholder="Nova rotina">
-<button class="acao" onclick="addRotina()">Adicionar</button>
-<div id="listaRotina"></div>
-</div>
-</div>
-</div>
-
-<!-- REMÉDIOS -->
-<div id="remedios" class="tela">
-<div class="container">
-<div class="card">
-<h3>Lembretes de Remédio</h3>
-<input id="nomeRemedio" placeholder="Nome do remédio">
-<input type="time" id="horaRemedio">
-<button class="acao" onclick="addRemedio()">Adicionar</button>
-<div id="listaRemedios"></div>
-</div>
-</div>
-</div>
-
-<!-- MENU -->
-<div class="menuApp">
-<button onclick="trocarTela('tarefas')">🏠</button>
-<button onclick="trocarTela('consultas')">📅</button>
-<button onclick="trocarTela('rotina')">🧠</button>
-<button onclick="trocarTela('remedios')">💊</button>
-</div>
-
-<script>
-// -------- TROCAR TELAS --------
-function trocarTela(id){
-document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
-document.getElementById(id).classList.add('ativa');
-}
-
-// -------- STORAGE --------
-function salvar(chave, dados){
-localStorage.setItem(chave, JSON.stringify(dados));
-}
-
-function carregar(chave){
-return JSON.parse(localStorage.getItem(chave)) || [];
-}
-
-// -------- TAREFAS --------
-let tarefas = carregar('tarefas');
-
-function renderTarefas(){
-const lista = document.getElementById('listaTarefas');
-lista.innerHTML = '';
-tarefas.forEach((t,i)=>{
-lista.innerHTML += `<div class="lista-item">${t}<button onclick="removerTarefa(${i})">❌</button></div>`;
-});
-}
-
-function addTarefa(){
-const input = document.getElementById('novaTarefa');
-if(!input.value.trim()) return;
-tarefas.push(input.value);
-salvar('tarefas', tarefas);
-input.value='';
-renderTarefas();
-}
-
-function removerTarefa(i){
-tarefas.splice(i,1);
-salvar('tarefas', tarefas);
-renderTarefas();
-}
-
-// -------- CONSULTAS --------
-let consultas = carregar('consultas');
-
-function renderConsultas(){
-const lista = document.getElementById('listaConsultas');
-lista.innerHTML='';
-consultas.forEach(c=>{
-lista.innerHTML += `<div>${c.nome} - ${c.data}</div>`;
-});
-}
-
-function addConsulta(){
-const nome=document.getElementById('nomeConsulta').value;
-const data=document.getElementById('dataConsulta').value;
-if(!nome||!data) return;
-consultas.push({nome,data});
-salvar('consultas',consultas);
-renderConsultas();
-}
-
-// -------- ROTINA --------
-let rotinas = carregar('rotinas');
-
-function renderRotina(){
-const lista=document.getElementById('listaRotina');
-lista.innerHTML='';
-rotinas.forEach(r=>{
-lista.innerHTML+=`<div>${r}</div>`;
-});
-}
-
-function addRotina(){
-const txt=document.getElementById('rotinaTexto');
-if(!txt.value.trim()) return;
-rotinas.push(txt.value);
-salvar('rotinas',rotinas);
-txt.value='';
-renderRotina();
-}
-
-// -------- REMÉDIOS --------
-let remedios = carregar('remedios');
-
-function renderRemedios(){
-const lista=document.getElementById('listaRemedios');
-lista.innerHTML='';
-remedios.forEach(r=>{
-lista.innerHTML+=`<div>${r.nome} às ${r.hora}</div>`;
-});
-}
-
-function addRemedio(){
-const nome=document.getElementById('nomeRemedio').value;
-const hora=document.getElementById('horaRemedio').value;
-if(!nome||!hora) return;
-remedios.push({nome,hora});
-salvar('remedios',remedios);
-renderRemedios();
-}
-
-// -------- INIT --------
-renderTarefas();
-renderConsultas();
-renderRotina();
-renderRemedios();
-
-// -------- TESTES BÁSICOS (debug) --------
-console.assert(Array.isArray(tarefas), 'Tarefas deve ser array');
-console.assert(typeof trocarTela === 'function', 'trocarTela precisa existir');
-</script>
-
-</body>
-</html>
