@@ -8,6 +8,42 @@
 <link rel="manifest" href="manifest.json">
 
 <style>
+.tela{
+display:none;
+padding:20px;
+padding-bottom:80px;
+}
+
+.tela.ativa{
+display:block;
+}
+
+.menuApp{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#ffffff;
+border-top:1px solid #ddd;
+display:flex;
+justify-content:space-around;
+padding:10px;
+}
+
+.menuApp button{
+background:none;
+border:none;
+font-size:20px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:5px;
+margin-bottom:12px;
+border-radius:8px;
+border:1px solid #ccc;
+}
 body{
 font-family:system-ui,-apple-system;
 background:linear-gradient(180deg,#6c8cff,#f3f6fb);
@@ -65,6 +101,26 @@ to{opacity:1}
 </head>
 
 <body>
+<div id="app">
+
+<!-- TELAS -->
+<div id="telaInicio" class="tela ativa">
+<h2>🌿 Vida Organizada AI</h2>
+<p>Bem-vinda ao seu assistente.</p>
+</div>
+
+<div id="telaAssistente" class="tela">
+<h2>🤖 Assistente</h2>
+<div id="assistenteArea"></div>
+</div>
+
+<div id="telaCardapio" class="tela">
+<h2>🍽️ Cardápio Inteligente</h2>
+<div id="cardapioContainer"></div>
+<button onclick="salvarCardapio()">💾 Salvar Cardápio</button>
+</div>
+
+</div>
 
 <button onclick="abrirCardapio()" style="
 position:fixed;
@@ -425,6 +481,62 @@ function salvarCardapio(){
 
  alert("✅ Cardápio salvo!");
 }
+
+/* ===== NAVEGAÇÃO DO APP ===== */
+
+function trocarTela(nome){
+
+document.querySelectorAll(".tela")
+.forEach(t=>t.classList.remove("ativa"));
+
+document.getElementById("tela"+nome)
+.classList.add("ativa");
+
+if(nome==="Cardapio"){
+carregarCardapio();
+}
+}
+
+/* ===== CARDÁPIO INTELIGENTE ===== */
+
+const diasSemana=[
+"Segunda","Terça","Quarta",
+"Quinta","Sexta","Sábado","Domingo"
+];
+
+function carregarCardapio(){
+
+const container=document.getElementById("cardapioContainer");
+container.innerHTML="";
+
+let dados=JSON.parse(localStorage.getItem("cardapioVidaAI"))||{};
+
+diasSemana.forEach(dia=>{
+container.innerHTML+=`
+<div>
+<strong>${dia}</strong>
+<input id="ref_${dia}"
+placeholder="Digite a refeição..."
+value="${dados[dia]||""}">
+</div>`;
+});
+}
+
+function salvarCardapio(){
+
+let dados={};
+
+diasSemana.forEach(dia=>{
+dados[dia]=document.getElementById("ref_"+dia).value;
+});
+
+localStorage.setItem(
+"cardapioVidaAI",
+JSON.stringify(dados)
+);
+
+alert("✅ Cardápio salvo!");
+}
 </script>
 
 <div id="cardapioTela" style="
@@ -449,6 +561,11 @@ z-index:1000;
 <button onclick="fecharCardapio()">Fechar</button>
 
 </div>
+<nav class="menuApp">
+<button onclick="trocarTela('Inicio')">🏠</button>
+<button onclick="trocarTela('Assistente')">🤖</button>
+<button onclick="trocarTela('Cardapio')">🍽️</button>
+</nav>
 
 </body>
 </html>
