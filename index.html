@@ -20,12 +20,22 @@ font-size:22px;
 font-weight:bold;
 }
 
+.tela{display:none;padding-bottom:80px;}
+.tela.ativa{display:block;}
+
 .card{
 background:white;
 margin:15px;
 padding:15px;
 border-radius:16px;
 box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:8px;
+margin-bottom:10px;
 }
 
 .menu{
@@ -38,6 +48,7 @@ justify-content:space-around;
 padding:10px;
 border-top:1px solid #ddd;
 }
+button{padding:8px 12px;}
 </style>
 </head>
 
@@ -45,40 +56,121 @@ border-top:1px solid #ddd;
 
 <header>🌸 Vida Organizada</header>
 
+<!-- TAREFAS -->
+<div id="tarefas" class="tela ativa">
 <div class="card">
 <h3>Tarefas</h3>
 <input id="tarefa">
-<button onclick="add()">Adicionar</button>
-<div id="lista"></div>
+<button onclick="addTarefa()">Adicionar</button>
+<div id="listaTarefas"></div>
+</div>
 </div>
 
+<!-- CONSULTAS -->
+<div id="consultas" class="tela">
+<div class="card">
+<h3>Consultas</h3>
+<input id="consultaNome" placeholder="Consulta">
+<input type="date" id="consultaData">
+<button onclick="addConsulta()">Salvar</button>
+<div id="listaConsultas"></div>
+</div>
+</div>
+
+<!-- ROTINA -->
+<div id="rotina" class="tela">
+<div class="card">
+<h3>Rotina</h3>
+<input id="rotinaTexto">
+<button onclick="addRotina()">Adicionar</button>
+<div id="listaRotina"></div>
+</div>
+</div>
+
+<!-- REMÉDIOS -->
+<div id="remedios" class="tela">
+<div class="card">
+<h3>Remédios</h3>
+<input id="remedioNome">
+<input type="time" id="remedioHora">
+<button onclick="addRemedio()">Adicionar</button>
+<div id="listaRemedios"></div>
+</div>
+</div>
+
+<!-- MENU -->
 <div class="menu">
-<button>🏠</button>
-<button>📅</button>
-<button>🧠</button>
-<button>💊</button>
+<button onclick="trocar('tarefas')">🏠</button>
+<button onclick="trocar('consultas')">📅</button>
+<button onclick="trocar('rotina')">🧠</button>
+<button onclick="trocar('remedios')">💊</button>
 </div>
 
 <script>
-let tarefas = JSON.parse(localStorage.getItem("tarefas")||"[]");
-
-function render(){
-lista.innerHTML="";
-tarefas.forEach(t=>{
-lista.innerHTML+=`<div>${t}</div>`;
-});
+function trocar(id){
+document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
+document.getElementById(id).classList.add('ativa');
 }
 
-function add(){
-const v=tarefa.value;
-if(!v) return;
-tarefas.push(v);
-localStorage.setItem("tarefas",JSON.stringify(tarefas));
+// STORAGE
+const salvar=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const carregar=(k)=>JSON.parse(localStorage.getItem(k)||"[]");
+
+// TAREFAS
+let tarefas=carregar("tarefas");
+function renderTarefas(){
+listaTarefas.innerHTML="";
+tarefas.forEach(t=>listaTarefas.innerHTML+=`<div>${t}</div>`);
+}
+function addTarefa(){
+if(!tarefa.value) return;
+tarefas.push(tarefa.value);
+salvar("tarefas",tarefas);
 tarefa.value="";
-render();
+renderTarefas();
 }
 
-render();
+// CONSULTAS
+let consultas=carregar("consultas");
+function renderConsultas(){
+listaConsultas.innerHTML="";
+consultas.forEach(c=>listaConsultas.innerHTML+=`<div>${c.nome} - ${c.data}</div>`);
+}
+function addConsulta(){
+consultas.push({nome:consultaNome.value,data:consultaData.value});
+salvar("consultas",consultas);
+renderConsultas();
+}
+
+// ROTINA
+let rotinas=carregar("rotinas");
+function renderRotina(){
+listaRotina.innerHTML="";
+rotinas.forEach(r=>listaRotina.innerHTML+=`<div>${r}</div>`);
+}
+function addRotina(){
+rotinas.push(rotinaTexto.value);
+salvar("rotinas",rotinas);
+renderRotina();
+}
+
+// REMÉDIOS
+let remedios=carregar("remedios");
+function renderRemedios(){
+listaRemedios.innerHTML="";
+remedios.forEach(r=>listaRemedios.innerHTML+=`<div>${r.nome} às ${r.hora}</div>`);
+}
+function addRemedio(){
+remedios.push({nome:remedioNome.value,hora:remedioHora.value});
+salvar("remedios",remedios);
+renderRemedios();
+}
+
+// INIT
+renderTarefas();
+renderConsultas();
+renderRotina();
+renderRemedios();
 </script>
 
 </body>
