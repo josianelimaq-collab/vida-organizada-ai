@@ -1,285 +1,210 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Vida Organizada AI</title>
+import React, { useState, useEffect } from "react";
 
-<link rel="manifest" href="manifest.json">
+// ✅ Este arquivo agora é um componente React válido (JSX)
+// Corrige o erro: Unexpected token em index.tsx
 
-<style>
-.tela{
-display:none;
-padding:20px;
-padding-bottom:80px;
+export default function VidaOrganizadaApp() {
+  const [tela, setTela] = useState("tarefas");
+
+  // ---------- STORAGE HELPERS ----------
+  const carregar = (chave) => {
+    try {
+      const data = localStorage.getItem(chave);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const salvar = (chave, dados) => {
+    localStorage.setItem(chave, JSON.stringify(dados));
+  };
+
+  // ---------- STATES ----------
+  const [tarefas, setTarefas] = useState(() => carregar("tarefas"));
+  const [consultas, setConsultas] = useState(() => carregar("consultas"));
+  const [rotinas, setRotinas] = useState(() => carregar("rotinas"));
+  const [remedios, setRemedios] = useState(() => carregar("remedios"));
+
+  const [novaTarefa, setNovaTarefa] = useState("");
+  const [nomeConsulta, setNomeConsulta] = useState("");
+  const [dataConsulta, setDataConsulta] = useState("");
+  const [rotinaTexto, setRotinaTexto] = useState("");
+  const [nomeRemedio, setNomeRemedio] = useState("");
+  const [horaRemedio, setHoraRemedio] = useState("");
+
+  // ---------- EFFECTS (persistência) ----------
+  useEffect(() => salvar("tarefas", tarefas), [tarefas]);
+  useEffect(() => salvar("consultas", consultas), [consultas]);
+  useEffect(() => salvar("rotinas", rotinas), [rotinas]);
+  useEffect(() => salvar("remedios", remedios), [remedios]);
+
+  // ---------- ACTIONS ----------
+  const addTarefa = () => {
+    if (!novaTarefa.trim()) return;
+    setTarefas([...tarefas, novaTarefa]);
+    setNovaTarefa("");
+  };
+
+  const removerTarefa = (i) => {
+    setTarefas(tarefas.filter((_, idx) => idx !== i));
+  };
+
+  const addConsulta = () => {
+    if (!nomeConsulta || !dataConsulta) return;
+    setConsultas([...consultas, { nome: nomeConsulta, data: dataConsulta }]);
+    setNomeConsulta("");
+    setDataConsulta("");
+  };
+
+  const addRotina = () => {
+    if (!rotinaTexto.trim()) return;
+    setRotinas([...rotinas, rotinaTexto]);
+    setRotinaTexto("");
+  };
+
+  const addRemedio = () => {
+    if (!nomeRemedio || !horaRemedio) return;
+    setRemedios([...remedios, { nome: nomeRemedio, hora: horaRemedio }]);
+    setNomeRemedio("");
+    setHoraRemedio("");
+  };
+
+  // ---------- COMPONENTES ----------
+  const Card = ({ children }) => (
+    <div className="bg-white p-4 mb-4 rounded-2xl shadow">
+      {children}
+    </div>
+  );
+
+  const TelaTarefas = () => (
+    <Card>
+      <h3 className="font-bold mb-2">Tarefas de Casa</h3>
+      <input
+        className="input"
+        value={novaTarefa}
+        onChange={(e) => setNovaTarefa(e.target.value)}
+        placeholder="Adicionar tarefa..."
+      />
+      <button className="acao" onClick={addTarefa}>Adicionar</button>
+      {tarefas.map((t, i) => (
+        <div key={i} className="lista-item">
+          {t}
+          <button onClick={() => removerTarefa(i)}>❌</button>
+        </div>
+      ))}
+    </Card>
+  );
+
+  const TelaConsultas = () => (
+    <Card>
+      <h3 className="font-bold mb-2">Marcar Consulta</h3>
+      <input
+        className="input"
+        placeholder="Nome da consulta"
+        value={nomeConsulta}
+        onChange={(e) => setNomeConsulta(e.target.value)}
+      />
+      <input
+        className="input"
+        type="date"
+        value={dataConsulta}
+        onChange={(e) => setDataConsulta(e.target.value)}
+      />
+      <button className="acao" onClick={addConsulta}>Salvar</button>
+      {consultas.map((c, i) => (
+        <div key={i}>{c.nome} - {c.data}</div>
+      ))}
+    </Card>
+  );
+
+  const TelaRotina = () => (
+    <Card>
+      <h3 className="font-bold mb-2">Rotina Diária</h3>
+      <input
+        className="input"
+        placeholder="Nova rotina"
+        value={rotinaTexto}
+        onChange={(e) => setRotinaTexto(e.target.value)}
+      />
+      <button className="acao" onClick={addRotina}>Adicionar</button>
+      {rotinas.map((r, i) => (
+        <div key={i}>{r}</div>
+      ))}
+    </Card>
+  );
+
+  const TelaRemedios = () => (
+    <Card>
+      <h3 className="font-bold mb-2">Lembretes de Remédio</h3>
+      <input
+        className="input"
+        placeholder="Nome do remédio"
+        value={nomeRemedio}
+        onChange={(e) => setNomeRemedio(e.target.value)}
+      />
+      <input
+        className="input"
+        type="time"
+        value={horaRemedio}
+        onChange={(e) => setHoraRemedio(e.target.value)}
+      />
+      <button className="acao" onClick={addRemedio}>Adicionar</button>
+      {remedios.map((r, i) => (
+        <div key={i}>{r.nome} às {r.hora}</div>
+      ))}
+    </Card>
+  );
+
+  // ---------- TESTES BÁSICOS ----------
+  console.assert(Array.isArray(tarefas), "tarefas deve ser array");
+  console.assert(typeof setTela === "function", "setTela deve existir");
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-indigo-400 to-slate-100 pb-20">
+      <header className="text-center text-white text-xl font-bold p-5">
+        🌸 Vida Organizada
+      </header>
+
+      <div className="p-4">
+        {tela === "tarefas" && <TelaTarefas />}
+        {tela === "consultas" && <TelaConsultas />}
+        {tela === "rotina" && <TelaRotina />}
+        {tela === "remedios" && <TelaRemedios />}
+      </div>
+
+      <div className="fixed bottom-0 left-0 w-full bg-white border-t flex justify-around p-3 text-xl">
+        <button onClick={() => setTela("tarefas")}>🏠</button>
+        <button onClick={() => setTela("consultas")}>📅</button>
+        <button onClick={() => setTela("rotina")}>🧠</button>
+        <button onClick={() => setTela("remedios")}>💊</button>
+      </div>
+
+      <style>{`
+        .input{
+          width:100%;
+          padding:10px;
+          margin-top:5px;
+          margin-bottom:12px;
+          border-radius:8px;
+          border:1px solid #ccc;
+        }
+        .acao{
+          width:100%;
+          padding:12px;
+          border:none;
+          border-radius:10px;
+          background:#6c8cff;
+          color:white;
+          font-size:16px;
+          margin-bottom:10px;
+        }
+        .lista-item{
+          display:flex;
+          justify-content:space-between;
+          margin-bottom:8px;
+        }
+      `}</style>
+    </div>
+  );
 }
-
-.tela.ativa{
-display:block;
-}
-
-.menuApp{
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-background:#ffffff;
-border-top:1px solid #ddd;
-display:flex;
-justify-content:space-around;
-padding:10px;
-}
-
-.menuApp button{
-background:none;
-border:none;
-font-size:20px;
-}
-
-input{
-width:100%;
-padding:10px;
-margin-top:5px;
-margin-bottom:12px;
-border-radius:8px;
-border:1px solid #ccc;
-}
-body{
-font-family:system-ui,-apple-system;
-background:linear-gradient(180deg,#6c8cff,#f3f6fb);
-margin:0;
-color:#333;
-}
-
-header{
-background:transparent;
-color:white;
-text-align:center;
-padding:20px;
-font-size:22px;
-font-weight:bold;
-}
-
-.container{
-padding:15px;
-margin-top:-10px;
-}
-
-.card{
-background:white;
-padding:16px;
-margin-bottom:15px;
-border-radius:18px;
-box-shadow:0 10px 25px rgba(0,0,0,.12);
-animation:fade .4s ease;
-}
-
-button{
-background:#6c8cff;
-border:none;
-color:white;
-padding:12px;
-border-radius:10px;
-width:100%;
-font-size:15px;
-}
-
-input, textarea{
-width:100%;
-padding:10px;
-margin-top:6px;
-border-radius:8px;
-border:1px solid #ddd;
-}
-
-@keyframes fade{
-from{opacity:0;transform:translateY(10px)}
-to{opacity:1}
-}
-</style>
-
-</head>
-
-<body>
-<div id="app">
-
-<!-- TELAS -->
-<div id="telaInicio" class="tela ativa">
-<h2>🌿 Vida Organizada AI</h2>
-<p>Bem-vinda ao seu assistente.</p>
-</div>
-
-<div id="telaAssistente" class="tela">
-<h2>🤖 Assistente</h2>
-<div id="assistenteArea"></div>
-</div>
-
-<div id="telaCardapio" class="tela">
-<h2>🍽️ Cardápio Inteligente</h2>
-<div id="cardapioContainer"></div>
-<button onclick="salvarCardapio()">💾 Salvar Cardápio</button>
-</div>
-
-</div>
-
-<button onclick="abrirCardapio()" style="
-position:fixed;
-bottom:20px;
-right:20px;
-padding:12px 18px;
-border-radius:12px;
-background:#ff914d;
-color:white;
-border:none;
-font-size:16px;
-z-index:999;
-">
-🍽️ Cardápio
-</button>
-
-<header>🌸 Vida Organizada AI</header>
-
-<div class="container">
-<div class="card" id="painelAI">
-<h3>🤖 Copiloto Autônomo</h3>
-<p id="planoDia">Analisando seu dia</p>
-</div>
-<div class="card">
-<h3>💰 Controle Financeiro</h3>
-<input id="valor" placeholder="Valor gasto">
-<button onclick="addGasto()">Adicionar gasto</button>
-<button onclick="abrirCardapio()">🍽️ Cardápio</button>
-<p>Total do mês: R$ <span id="total">0</span></p>
-</div>
-
-<div class="card">
-<h3>🎯 Meta Financeira</h3>
-<input id="meta" placeholder="Meta mensal">
-<button onclick="salvarMeta()">Salvar meta</button>
-<p id="metaTexto"></p>
-</div>
-
-<div class="card">
-<h3>🥗 Cardápio da Semana</h3>
-<textarea id="cardapio" placeholder="Digite seu cardápio semanal"></textarea>
-<button onclick="salvarCardapio()">Salvar cardápio</button>
-</div>
-
-<div class="card">
-<h3>👶 Perfis dos Filhos</h3>
-<input id="filho" placeholder="Nome do filho">
-<button onclick="addFilho()">Adicionar</button>
-<ul id="listaFilhos"></ul>
-</div>
-
-<div class="card">
-<h3>🌙 Modo Dia Caótico</h3>
-<button onclick="modoCaotico()">Ativar rotina simplificada</button>
-<p id="caos"></p>
-</div>
-
-</div>
-
-<script>
-
-/* ===== DADOS ===== */
-
-const diasSemana = [
-"Segunda","Terça","Quarta",
-"Quinta","Sexta","Sábado","Domingo"
-];
-
-/* ===== NAVEGAÇÃO ===== */
-
-function trocarTela(nome){
-
-document.querySelectorAll(".tela")
-.forEach(t=>t.classList.remove("ativa"));
-
-document.getElementById("tela"+nome)
-.classList.add("ativa");
-
-if(nome==="Cardapio"){
-carregarCardapio();
-}
-
-}
-
-/* ===== CARDÁPIO INTELIGENTE ===== */
-
-function carregarCardapio(){
-
-const container=document.getElementById("cardapioContainer");
-container.innerHTML="";
-
-let dados=JSON.parse(
-localStorage.getItem("cardapioVidaAI")
-)||{};
-
-diasSemana.forEach(dia=>{
-container.innerHTML+=`
-<div class="card">
-<strong>${dia}</strong>
-<input id="ref_${dia}"
-placeholder="Digite a refeição..."
-value="${dados[dia]||""}">
-</div>`;
-});
-
-}
-
-function salvarCardapio(){
-
-let dados={};
-
-diasSemana.forEach(dia=>{
-dados[dia]=document.getElementById("ref_"+dia).value;
-});
-
-localStorage.setItem(
-"cardapioVidaAI",
-JSON.stringify(dados)
-);
-
-alert("✅ Cardápio salvo!");
-
-}
-
-/* ===== INICIALIZAÇÃO ===== */
-
-window.onload=function(){
-console.log("Vida Organizada AI iniciado ✅");
-};
-
-</script>
-
-<div id="cardapioTela" style="
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:white;
-overflow:auto;
-padding:20px;
-z-index:1000;
-">
-
-<h2>🍽️ Cardápio da Semana</h2>
-
-<div id="cardapioContainer"></div>
-
-<br>
-<button onclick="salvarCardapio()">💾 Salvar</button>
-<button onclick="fecharCardapio()">Fechar</button>
-
-</div>
-<nav class="menuApp">
-<button onclick="trocarTela('Inicio')">🏠</button>
-<button onclick="trocarTela('Assistente')">🤖</button>
-<button onclick="trocarTela('Cardapio')">🍽️</button>
-</nav>
-
-</body>
-</html>
