@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 // Vida Organizada AI — versão React válida
 // Corrige: SyntaxError Unexpected token em index.tsx
+// Adicionado: proteção SSR + testes básicos
 
 export default function VidaOrganizadaApp() {
   const [tela, setTela] = useState("tarefas");
@@ -9,6 +10,7 @@ export default function VidaOrganizadaApp() {
   // ---------------- STORAGE HELPERS ----------------
   const carregar = (chave) => {
     try {
+      if (typeof window === "undefined") return [];
       const data = localStorage.getItem(chave);
       return data ? JSON.parse(data) : [];
     } catch (e) {
@@ -19,6 +21,7 @@ export default function VidaOrganizadaApp() {
 
   const salvar = (chave, valor) => {
     try {
+      if (typeof window === "undefined") return;
       localStorage.setItem(chave, JSON.stringify(valor));
     } catch (e) {
       console.error("Erro ao salvar", chave, e);
@@ -47,30 +50,30 @@ export default function VidaOrganizadaApp() {
   // ---------------- FUNÇÕES ----------------
   const addTarefa = () => {
     if (!novaTarefa.trim()) return;
-    setTarefas([...tarefas, novaTarefa]);
+    setTarefas((prev) => [...prev, novaTarefa]);
     setNovaTarefa("");
   };
 
   const removerTarefa = (i) => {
-    setTarefas(tarefas.filter((_, index) => index !== i));
+    setTarefas((prev) => prev.filter((_, index) => index !== i));
   };
 
   const addConsulta = () => {
     if (!nomeConsulta || !dataConsulta) return;
-    setConsultas([...consultas, { nome: nomeConsulta, data: dataConsulta }]);
+    setConsultas((prev) => [...prev, { nome: nomeConsulta, data: dataConsulta }]);
     setNomeConsulta("");
     setDataConsulta("");
   };
 
   const addRotina = () => {
     if (!rotinaTexto.trim()) return;
-    setRotinas([...rotinas, rotinaTexto]);
+    setRotinas((prev) => [...prev, rotinaTexto]);
     setRotinaTexto("");
   };
 
   const addRemedio = () => {
     if (!nomeRemedio || !horaRemedio) return;
-    setRemedios([...remedios, { nome: nomeRemedio, hora: horaRemedio }]);
+    setRemedios((prev) => [...prev, { nome: nomeRemedio, hora: horaRemedio }]);
     setNomeRemedio("");
     setHoraRemedio("");
   };
@@ -95,6 +98,10 @@ export default function VidaOrganizadaApp() {
       {children}
     </div>
   );
+
+  // ---------------- TESTES BÁSICOS ----------------
+  console.assert(typeof setTela === "function", "setTela deve existir");
+  console.assert(Array.isArray(tarefas), "tarefas precisa ser array");
 
   // ---------------- RENDER ----------------
   return (
