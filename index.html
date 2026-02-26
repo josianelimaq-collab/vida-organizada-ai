@@ -1,157 +1,160 @@
-import React, { useState, useEffect } from "react";
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-export default function VidaOrganizadaApp() {
-  const [tela, setTela] = useState("tarefas");
-  const [tarefas, setTarefas] = useState([]);
-  const [novaTarefa, setNovaTarefa] = useState("");
+<title>Vida Organizada AI</title>
 
-  // ===== STORAGE HELPERS =====
-  const carregar = (chave) => {
-    try {
-      const data = localStorage.getItem(chave);
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
-  };
-
-  const salvar = (chave, valor) => {
-    localStorage.setItem(chave, JSON.stringify(valor));
-  };
-
-  useEffect(() => {
-    setTarefas(carregar("tarefas"));
-  }, []);
-
-  useEffect(() => {
-    salvar("tarefas", tarefas);
-  }, [tarefas]);
-
-  const adicionarTarefa = () => {
-    if (!novaTarefa.trim()) return;
-    setTarefas([...tarefas, { texto: novaTarefa, feito: false }]);
-    setNovaTarefa("");
-  };
-
-  const alternarTarefa = (index) => {
-    const atualizadas = [...tarefas];
-    atualizadas[index].feito = !atualizadas[index].feito;
-    setTarefas(atualizadas);
-  };
-
-  // ===== COMPONENTES DE TELA =====
-
-  const TelaTarefas = () => (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Tarefas da Casa</h2>
-
-      <div className="flex gap-2">
-        <input
-          className="flex-1 p-3 rounded-xl border"
-          placeholder="Adicionar tarefa..."
-          value={novaTarefa}
-          onChange={(e) => setNovaTarefa(e.target.value)}
-        />
-        <button
-          onClick={adicionarTarefa}
-          className="bg-black text-white px-4 rounded-xl"
-        >
-          +
-        </button>
-      </div>
-
-      <ul className="space-y-2">
-        {tarefas.map((t, i) => (
-          <li
-            key={i}
-            onClick={() => alternarTarefa(i)}
-            className={`p-3 rounded-xl shadow cursor-pointer transition ${
-              t.feito ? "bg-green-100 line-through" : "bg-white"
-            }`}
-          >
-            {t.texto}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-
-  const TelaRotina = () => (
-    <div>
-      <h2 className="text-xl font-semibold">Rotina Diária</h2>
-      <p className="mt-2 text-gray-600">
-        Aqui você poderá organizar manhã, tarde e noite.
-      </p>
-    </div>
-  );
-
-  const TelaRemedios = () => (
-    <div>
-      <h2 className="text-xl font-semibold">Lembretes de Remédio</h2>
-      <p className="mt-2 text-gray-600">
-        Adicione horários para nunca esquecer.
-      </p>
-    </div>
-  );
-
-  const TelaConsultas = () => (
-    <div>
-      <h2 className="text-xl font-semibold">Consultas</h2>
-      <p className="mt-2 text-gray-600">
-        Controle médico da família em um só lugar.
-      </p>
-    </div>
-  );
-
-  // ===== UI PREMIUM =====
-
-  const renderTela = () => {
-    switch (tela) {
-      case "tarefas":
-        return <TelaTarefas />;
-      case "rotina":
-        return <TelaRotina />;
-      case "remedios":
-        return <TelaRemedios />;
-      case "consultas":
-        return <TelaConsultas />;
-      default:
-        return <TelaTarefas />;
-    }
-  };
-
-  const BotaoAba = ({ id, label, icon }) => (
-    <button
-      onClick={() => setTela(id)}
-      className={`flex flex-col items-center text-xs flex-1 py-2 transition ${
-        tela === id ? "text-black font-semibold" : "text-gray-400"
-      }`}
-    >
-      <span className="text-lg">{icon}</span>
-      {label}
-    </button>
-  );
-
-  return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center">
-      {/* HEADER */}
-      <header className="w-full max-w-md p-4 text-center">
-        <h1 className="text-2xl font-bold">Vida Organizada AI</h1>
-        <p className="text-sm text-gray-500">Modo Premium Ativado ✨</p>
-      </header>
-
-      {/* CONTEÚDO */}
-      <main className="flex-1 w-full max-w-md bg-gray-50 rounded-3xl shadow-lg p-4">
-        {renderTela()}
-      </main>
-
-      {/* NAVBAR APP */}
-      <nav className="w-full max-w-md bg-white border-t flex rounded-t-3xl shadow-lg">
-        <BotaoAba id="tarefas" label="Tarefas" icon="🏠" />
-        <BotaoAba id="rotina" label="Rotina" icon="📅" />
-        <BotaoAba id="remedios" label="Remédios" icon="💊" />
-        <BotaoAba id="consultas" label="Consultas" icon="🩺" />
-      </nav>
-    </div>
-  );
+<style>
+body{
+  margin:0;
+  font-family:system-ui;
+  background:linear-gradient(180deg,#6c8cff,#f3f6fb);
 }
+
+header{
+  text-align:center;
+  padding:20px;
+  color:white;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.tela{
+  display:none;
+  padding:20px;
+  padding-bottom:90px;
+}
+
+.ativa{
+  display:block;
+}
+
+.card{
+  background:white;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:18px;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+
+.menu{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  border-top:1px solid #ddd;
+  padding:10px;
+}
+
+button{
+  padding:8px 12px;
+  border:none;
+  border-radius:10px;
+  background:#6c8cff;
+  color:white;
+}
+input{
+  padding:8px;
+  margin:5px 0;
+  width:100%;
+}
+</style>
+</head>
+
+<body>
+
+<header>🌸 Vida Organizada</header>
+
+<!-- TAREFAS -->
+<div id="tarefas" class="tela ativa">
+  <div class="card">
+    <h3>Tarefas de Casa</h3>
+    <input id="novaTarefa" placeholder="Adicionar tarefa">
+    <button onclick="addTarefa()">Adicionar</button>
+    <div id="listaTarefas"></div>
+  </div>
+</div>
+
+<!-- CONSULTAS -->
+<div id="consultas" class="tela">
+  <div class="card">
+    <h3>Consultas</h3>
+    <input id="nomeConsulta" placeholder="Consulta">
+    <input type="date" id="dataConsulta">
+    <button onclick="addConsulta()">Salvar</button>
+    <div id="listaConsultas"></div>
+  </div>
+</div>
+
+<!-- ROTINA -->
+<div id="rotina" class="tela">
+  <div class="card">
+    <h3>Rotina Diária</h3>
+    <input id="novaRotina" placeholder="Nova rotina">
+    <button onclick="addRotina()">Adicionar</button>
+    <div id="listaRotina"></div>
+  </div>
+</div>
+
+<!-- REMÉDIOS -->
+<div id="remedios" class="tela">
+  <div class="card">
+    <h3>Lembretes de Remédio</h3>
+    <input id="nomeRemedio" placeholder="Remédio">
+    <input type="time" id="horaRemedio">
+    <button onclick="addRemedio()">Adicionar</button>
+    <div id="listaRemedios"></div>
+  </div>
+</div>
+
+<!-- MENU -->
+<div class="menu">
+<button onclick="trocarTela('tarefas')">🏠</button>
+<button onclick="trocarTela('consultas')">📅</button>
+<button onclick="trocarTela('rotina')">🧠</button>
+<button onclick="trocarTela('remedios')">💊</button>
+</div>
+
+<script>
+function trocarTela(id){
+  document.querySelectorAll(".tela")
+    .forEach(t=>t.classList.remove("ativa"));
+
+  document.getElementById(id)
+    .classList.add("ativa");
+}
+
+function addTarefa(){
+  const input=document.getElementById("novaTarefa");
+  if(!input.value) return;
+  listaTarefas.innerHTML+=`<p>✅ ${input.value}</p>`;
+  input.value="";
+}
+
+function addConsulta(){
+  const nome=nomeConsulta.value;
+  const data=dataConsulta.value;
+  if(!nome||!data) return;
+  listaConsultas.innerHTML+=`<p>📅 ${nome} - ${data}</p>`;
+}
+
+function addRotina(){
+  const r=novaRotina.value;
+  if(!r) return;
+  listaRotina.innerHTML+=`<p>🧠 ${r}</p>`;
+}
+
+function addRemedio(){
+  const n=nomeRemedio.value;
+  const h=horaRemedio.value;
+  if(!n||!h) return;
+  listaRemedios.innerHTML+=`<p>💊 ${n} às ${h}</p>`;
+}
+</script>
+
+</body>
+</html>
