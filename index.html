@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from "react";
 
-// ✅ Este arquivo agora é um componente React válido (JSX)
-// Corrige o erro: Unexpected token em index.tsx
+// Vida Organizada AI — versão React válida
+// Corrige: SyntaxError Unexpected token em index.tsx
 
 export default function VidaOrganizadaApp() {
   const [tela, setTela] = useState("tarefas");
 
-  // ---------- STORAGE HELPERS ----------
+  // ---------------- STORAGE HELPERS ----------------
   const carregar = (chave) => {
     try {
       const data = localStorage.getItem(chave);
       return data ? JSON.parse(data) : [];
-    } catch {
+    } catch (e) {
+      console.error("Erro ao carregar", chave, e);
       return [];
     }
   };
 
-  const salvar = (chave, dados) => {
-    localStorage.setItem(chave, JSON.stringify(dados));
+  const salvar = (chave, valor) => {
+    try {
+      localStorage.setItem(chave, JSON.stringify(valor));
+    } catch (e) {
+      console.error("Erro ao salvar", chave, e);
+    }
   };
 
-  // ---------- STATES ----------
+  // ---------------- STATES ----------------
   const [tarefas, setTarefas] = useState(() => carregar("tarefas"));
   const [consultas, setConsultas] = useState(() => carregar("consultas"));
   const [rotinas, setRotinas] = useState(() => carregar("rotinas"));
@@ -33,13 +38,13 @@ export default function VidaOrganizadaApp() {
   const [nomeRemedio, setNomeRemedio] = useState("");
   const [horaRemedio, setHoraRemedio] = useState("");
 
-  // ---------- EFFECTS (persistência) ----------
+  // ---------------- PERSISTÊNCIA ----------------
   useEffect(() => salvar("tarefas", tarefas), [tarefas]);
   useEffect(() => salvar("consultas", consultas), [consultas]);
   useEffect(() => salvar("rotinas", rotinas), [rotinas]);
   useEffect(() => salvar("remedios", remedios), [remedios]);
 
-  // ---------- ACTIONS ----------
+  // ---------------- FUNÇÕES ----------------
   const addTarefa = () => {
     if (!novaTarefa.trim()) return;
     setTarefas([...tarefas, novaTarefa]);
@@ -47,7 +52,7 @@ export default function VidaOrganizadaApp() {
   };
 
   const removerTarefa = (i) => {
-    setTarefas(tarefas.filter((_, idx) => idx !== i));
+    setTarefas(tarefas.filter((_, index) => index !== i));
   };
 
   const addConsulta = () => {
@@ -70,141 +75,114 @@ export default function VidaOrganizadaApp() {
     setHoraRemedio("");
   };
 
-  // ---------- COMPONENTES ----------
-  const Card = ({ children }) => (
-    <div className="bg-white p-4 mb-4 rounded-2xl shadow">
+  // ---------------- UI HELPERS ----------------
+  const Tela = ({ id, children }) => (
+    <div style={{ display: tela === id ? "block" : "none", padding: 20, paddingBottom: 90 }}>
       {children}
     </div>
   );
 
-  const TelaTarefas = () => (
-    <Card>
-      <h3 className="font-bold mb-2">Tarefas de Casa</h3>
-      <input
-        className="input"
-        value={novaTarefa}
-        onChange={(e) => setNovaTarefa(e.target.value)}
-        placeholder="Adicionar tarefa..."
-      />
-      <button className="acao" onClick={addTarefa}>Adicionar</button>
-      {tarefas.map((t, i) => (
-        <div key={i} className="lista-item">
-          {t}
-          <button onClick={() => removerTarefa(i)}>❌</button>
-        </div>
-      ))}
-    </Card>
+  const Card = ({ children }) => (
+    <div
+      style={{
+        background: "white",
+        padding: 16,
+        marginBottom: 15,
+        borderRadius: 18,
+        boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+      }}
+    >
+      {children}
+    </div>
   );
 
-  const TelaConsultas = () => (
-    <Card>
-      <h3 className="font-bold mb-2">Marcar Consulta</h3>
-      <input
-        className="input"
-        placeholder="Nome da consulta"
-        value={nomeConsulta}
-        onChange={(e) => setNomeConsulta(e.target.value)}
-      />
-      <input
-        className="input"
-        type="date"
-        value={dataConsulta}
-        onChange={(e) => setDataConsulta(e.target.value)}
-      />
-      <button className="acao" onClick={addConsulta}>Salvar</button>
-      {consultas.map((c, i) => (
-        <div key={i}>{c.nome} - {c.data}</div>
-      ))}
-    </Card>
-  );
-
-  const TelaRotina = () => (
-    <Card>
-      <h3 className="font-bold mb-2">Rotina Diária</h3>
-      <input
-        className="input"
-        placeholder="Nova rotina"
-        value={rotinaTexto}
-        onChange={(e) => setRotinaTexto(e.target.value)}
-      />
-      <button className="acao" onClick={addRotina}>Adicionar</button>
-      {rotinas.map((r, i) => (
-        <div key={i}>{r}</div>
-      ))}
-    </Card>
-  );
-
-  const TelaRemedios = () => (
-    <Card>
-      <h3 className="font-bold mb-2">Lembretes de Remédio</h3>
-      <input
-        className="input"
-        placeholder="Nome do remédio"
-        value={nomeRemedio}
-        onChange={(e) => setNomeRemedio(e.target.value)}
-      />
-      <input
-        className="input"
-        type="time"
-        value={horaRemedio}
-        onChange={(e) => setHoraRemedio(e.target.value)}
-      />
-      <button className="acao" onClick={addRemedio}>Adicionar</button>
-      {remedios.map((r, i) => (
-        <div key={i}>{r.nome} às {r.hora}</div>
-      ))}
-    </Card>
-  );
-
-  // ---------- TESTES BÁSICOS ----------
-  console.assert(Array.isArray(tarefas), "tarefas deve ser array");
-  console.assert(typeof setTela === "function", "setTela deve existir");
-
+  // ---------------- RENDER ----------------
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-400 to-slate-100 pb-20">
-      <header className="text-center text-white text-xl font-bold p-5">
+    <div
+      style={{
+        fontFamily: "system-ui",
+        background: "linear-gradient(180deg,#6c8cff,#f3f6fb)",
+        minHeight: "100vh",
+        color: "#333",
+      }}
+    >
+      <header
+        style={{ textAlign: "center", padding: 20, color: "white", fontWeight: "bold", fontSize: 22 }}
+      >
         🌸 Vida Organizada
       </header>
 
-      <div className="p-4">
-        {tela === "tarefas" && <TelaTarefas />}
-        {tela === "consultas" && <TelaConsultas />}
-        {tela === "rotina" && <TelaRotina />}
-        {tela === "remedios" && <TelaRemedios />}
-      </div>
+      {/* TAREFAS */}
+      <Tela id="tarefas">
+        <Card>
+          <h3>Tarefas de Casa</h3>
+          <input value={novaTarefa} onChange={(e) => setNovaTarefa(e.target.value)} placeholder="Adicionar tarefa..." />
+          <button onClick={addTarefa}>Adicionar</button>
+          {tarefas.map((t, i) => (
+            <div key={i} style={{ display: "flex", justifyContent: "space-between" }}>
+              {t}
+              <button onClick={() => removerTarefa(i)}>❌</button>
+            </div>
+          ))}
+        </Card>
+      </Tela>
 
-      <div className="fixed bottom-0 left-0 w-full bg-white border-t flex justify-around p-3 text-xl">
+      {/* CONSULTAS */}
+      <Tela id="consultas">
+        <Card>
+          <h3>Marcar Consulta</h3>
+          <input value={nomeConsulta} onChange={(e) => setNomeConsulta(e.target.value)} placeholder="Nome da consulta" />
+          <input type="date" value={dataConsulta} onChange={(e) => setDataConsulta(e.target.value)} />
+          <button onClick={addConsulta}>Salvar</button>
+          {consultas.map((c, i) => (
+            <div key={i}>{c.nome} - {c.data}</div>
+          ))}
+        </Card>
+      </Tela>
+
+      {/* ROTINA */}
+      <Tela id="rotina">
+        <Card>
+          <h3>Rotina Diária</h3>
+          <input value={rotinaTexto} onChange={(e) => setRotinaTexto(e.target.value)} placeholder="Nova rotina" />
+          <button onClick={addRotina}>Adicionar</button>
+          {rotinas.map((r, i) => (
+            <div key={i}>{r}</div>
+          ))}
+        </Card>
+      </Tela>
+
+      {/* REMÉDIOS */}
+      <Tela id="remedios">
+        <Card>
+          <h3>Lembretes de Remédio</h3>
+          <input value={nomeRemedio} onChange={(e) => setNomeRemedio(e.target.value)} placeholder="Nome do remédio" />
+          <input type="time" value={horaRemedio} onChange={(e) => setHoraRemedio(e.target.value)} />
+          <button onClick={addRemedio}>Adicionar</button>
+          {remedios.map((r, i) => (
+            <div key={i}>{r.nome} às {r.hora}</div>
+          ))}
+        </Card>
+      </Tela>
+
+      {/* MENU */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          width: "100%",
+          background: "white",
+          borderTop: "1px solid #ddd",
+          display: "flex",
+          justifyContent: "space-around",
+          padding: 10,
+        }}
+      >
         <button onClick={() => setTela("tarefas")}>🏠</button>
         <button onClick={() => setTela("consultas")}>📅</button>
         <button onClick={() => setTela("rotina")}>🧠</button>
         <button onClick={() => setTela("remedios")}>💊</button>
       </div>
-
-      <style>{`
-        .input{
-          width:100%;
-          padding:10px;
-          margin-top:5px;
-          margin-bottom:12px;
-          border-radius:8px;
-          border:1px solid #ccc;
-        }
-        .acao{
-          width:100%;
-          padding:12px;
-          border:none;
-          border-radius:10px;
-          background:#6c8cff;
-          color:white;
-          font-size:16px;
-          margin-bottom:10px;
-        }
-        .lista-item{
-          display:flex;
-          justify-content:space-between;
-          margin-bottom:8px;
-        }
-      `}</style>
     </div>
   );
 }
