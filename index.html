@@ -604,20 +604,29 @@ renderFinanceiro();
 
 function addConta(){
 
-let conta = {
-descricao: document.getElementById("finDescricao").value,
-valor: document.getElementById("finValor").value,
-vencimento: document.getElementById("finVencimento").value,
-tipo: document.getElementById("finTipo").value
-};
+const nome = document.getElementById("nomeConta").value.trim();
+const valor = Number(document.getElementById("valorConta").value);
+const data = document.getElementById("dataConta").value;
 
-if(!conta.descricao) return;
+if(!nome || !valor || !data){
+alert("Preencha todos os campos ✅");
+return;
+}
 
-contas.push(conta);
+contas.push({
+nome,
+valor,
+data
+});
 
-document.getElementById("finDescricao").value="";
-document.getElementById("finValor").value="";
-document.getElementById("finVencimento").value="";
+salvar("contas", contas);
+renderContas();
+
+/* limpa campos */
+document.getElementById("nomeConta").value="";
+document.getElementById("valorConta").value="";
+document.getElementById("dataConta").value="";
+}
 
 salvarContas();
 }
