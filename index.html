@@ -274,16 +274,6 @@ Bebido hoje:
 
 </div>
 
-<button class="acao" onclick="sugerirRefeicoes()">
-✨ Sugerir refeições inteligentes
-</button>
-
-<button class="acao" onclick="sugerirRefeicaoEmagrecimento()">
-✨ Sugerir refeição para emagrecimento
-</button>
-  
-</div>
-  
 <div id="cardapioLista"></div>
 
 <button class="acao" onclick="salvarCardapio()">Salvar Cardápio</button>
@@ -1733,39 +1723,62 @@ localStorage.setItem("metaAgua", meta);
 
 function sugerirRefeicoesIA(){
 
-const meta = Number(localStorage.getItem("metaCalorias")) || 1800;
+const area = document.getElementById("sugestoesRefeicoes");
 
-/* BASE EMAGRECIMENTO (equilibrado) */
-const refeicoes = {
+if(!area) return;
 
-cafe:[
-"🥣 Iogurte natural + aveia + banana",
+/* sugestões focadas em emagrecimento */
+const cafes = [
 "🍳 Omelete + café sem açúcar",
-"🍞 Pão integral + ovo mexido",
-"🍓 Vitamina de frutas com chia"
-],
+"🥣 Iogurte natural + chia + fruta",
+"🍌 Vitamina de banana com aveia",
+"🥑 Pão integral + ovo mexido"
+];
 
-almoco:[
-"🍗 Frango grelhado + arroz + salada",
+const almocos = [
+"🥗 Frango grelhado + salada + arroz integral",
 "🐟 Peixe assado + legumes",
-"🥗 Salada completa com proteína",
-"🍲 Carne magra + purê de abóbora"
-],
+"🥩 Carne magra + purê de abóbora",
+"🍗 Frango desfiado + legumes salteados"
+];
 
-lanche:[
-"🍎 Fruta + castanhas",
-"🥜 Iogurte + amendoim",
+const lanches = [
+"🍎 Maçã + castanhas",
+"🥜 Amendoim ou mix de nuts",
 "🧀 Queijo branco + fruta",
-"🥤 Shake proteico caseiro"
-],
+"🥣 Iogurte proteico"
+];
 
-jantar:[
-"🥗 Salada + ovo cozido",
-"🍗 Frango desfiado + legumes",
-"🍲 Sopa leve de legumes",
-"🐟 Peixe grelhado + salada"
-]
-};
+const jantares = [
+"🥗 Salada completa com proteína",
+"🍳 Omelete de legumes",
+"🥣 Sopa leve de legumes",
+"🐔 Frango grelhado + legumes"
+];
+
+/* escolher aleatório */
+const r = (lista)=> lista[Math.floor(Math.random()*lista.length)];
+
+area.innerHTML = `
+<div class="card">
+
+<h3>✨ Sugestões IA para Emagrecimento</h3>
+
+<b>☀️ Café da manhã</b><br>
+${r(cafes)}<br><br>
+
+<b>🍛 Almoço</b><br>
+${r(almocos)}<br><br>
+
+<b>🍎 Lanche</b><br>
+${r(lanches)}<br><br>
+
+<b>🌙 Jantar</b><br>
+${r(jantares)}
+
+</div>
+`;
+}
 
 /* AJUSTE INTELIGENTE POR META */
 let foco = "equilibrado";
