@@ -1780,44 +1780,6 @@ ${r(jantares)}
 `;
 }
 
-/* AJUSTE INTELIGENTE POR META */
-let foco = "equilibrado";
-
-if(meta <= 1500) foco = "emagrecimento";
-if(meta >= 2200) foco = "energia";
-
-/* SORTEIO IA */
-function escolher(lista){
-return lista[Math.floor(Math.random()*lista.length)];
-}
-
-/* GERAR MENU */
-const sugestao = {
-cafe: escolher(refeicoes.cafe),
-almoco: escolher(refeicoes.almoco),
-lanche: escolher(refeicoes.lanche),
-jantar: escolher(refeicoes.jantar)
-};
-
-/* RENDER */
-document.getElementById("sugestoesRefeicoes").innerHTML = `
-<div class="card">
-<h3>🤖 Sugestão Inteligente (${foco})</h3>
-
-<p><b>🌅 Café:</b> ${sugestao.cafe}</p>
-<p><b>🍛 Almoço:</b> ${sugestao.almoco}</p>
-<p><b>🍎 Lanche:</b> ${sugestao.lanche}</p>
-<p><b>🌙 Jantar:</b> ${sugestao.jantar}</p>
-
-<button class="acao" onclick="aplicarSugestaoCardapio()">
-Aplicar no cardápio
-</button>
-</div>
-`;
-
-window.sugestaoAtual = sugestao;
-}
-
 function aplicarSugestaoCardapio(){
 
 if(!window.sugestaoAtual) return;
