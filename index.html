@@ -135,7 +135,32 @@ border-radius:10px;
 <input id="novaTarefa" placeholder="Adicionar tarefa...">
 <button onclick="addTarefa()">Adicionar</button>
 <div id="listaTarefas" class="lista"></div>
+
+<div class="card">
+
+<h3>🧼 Planejamento Semanal</h3>
+
+<select id="diaSemana">
+<option>Segunda</option>
+<option>Terça</option>
+<option>Quarta</option>
+<option>Quinta</option>
+<option>Sexta</option>
+<option>Sábado</option>
+<option>Domingo</option>
+</select>
+
+<input id="novaTarefaSemana"
+placeholder="Ex: Lavar roupa">
+
+<button class="acao" onclick="addTarefaSemana()">
+Adicionar tarefa
+</button>
+
+<div id="calendarioSemanal"></div>
+
 </div>
+
 </div>
 
 <!-- CONSULTAS -->
@@ -1948,6 +1973,130 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 
 console.log("✅ Modo App Profissional Ativado");
+
+/* =================================
+   📅 CALENDÁRIO SEMANAL DE TAREFAS
+================================= */
+
+const diasSemana = [
+"Segunda","Terça","Quarta",
+"Quinta","Sexta","Sábado","Domingo"
+];
+
+let tarefasSemana =
+JSON.parse(localStorage.getItem("tarefasSemana")) || {};
+
+/* criar estrutura inicial */
+diasSemana.forEach(d=>{
+if(!tarefasSemana[d]) tarefasSemana[d]=[];
+});
+
+function salvarTarefasSemana(){
+localStorage.setItem(
+"tarefasSemana",
+JSON.stringify(tarefasSemana)
+);
+renderCalendario();
+}
+
+/* adicionar tarefa */
+function addTarefaSemana(){
+
+const dia =
+document.getElementById("diaSemana").value;
+
+const input =
+document.getElementById("novaTarefaSemana");
+
+const texto = input.value.trim();
+
+if(!texto) return;
+
+tarefasSemana[dia].push({
+texto,
+feito:false
+});
+
+input.value="";
+
+salvarTarefasSemana();
+}
+
+/* marcar feito */
+function toggleSemana(dia,i){
+
+tarefasSemana[dia][i].feito =
+!tarefasSemana[dia][i].feito;
+
+salvarTarefasSemana();
+}
+
+/* remover */
+function removerSemana(dia,i){
+
+tarefasSemana[dia].splice(i,1);
+salvarTarefasSemana();
+}
+
+/* render calendário */
+function renderCalendario(){
+
+const area =
+document.getElementById("calendarioSemanal");
+
+if(!area) return;
+
+area.innerHTML="";
+
+diasSemana.forEach(dia=>{
+
+area.innerHTML += `
+<div style="
+margin-top:15px;
+padding:12px;
+background:#f7f8ff;
+border-radius:14px;
+">
+
+<h4>${dia}</h4>
+
+${
+tarefasSemana[dia].map((t,i)=>`
+<div class="lista-item">
+
+<span style="
+text-decoration:${t.feito?"line-through":"none"};
+opacity:${t.feito?0.6:1};
+">
+${t.texto}
+</span>
+
+<div>
+<button onclick="toggleSemana('${dia}',${i})">
+${t.feito?"↩️":"✔️"}
+</button>
+
+<button onclick="removerSemana('${dia}',${i})">
+❌
+</button>
+</div>
+
+</div>
+`).join("")
+}
+
+</div>
+`;
+
+});
+
+}
+
+/* iniciar */
+document.addEventListener(
+"DOMContentLoaded",
+renderCalendario
+);
   
 </script>
 
