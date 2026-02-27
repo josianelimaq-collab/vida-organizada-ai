@@ -124,6 +124,10 @@ border-radius:10px;
 
 <header>🌸 Vida Organizada AI</header>
 
+<div class="card" id="assistenteAI" style="margin:15px;">
+<h3>🤖 Assistente Vida AI</h3>
+<div id="mensagemAI">Analisando sua rotina...</div>
+</div>
 <!-- TAREFAS -->
 <div id="tarefas" class="tela ativa">
 <div class="card">
@@ -380,6 +384,32 @@ unicos.forEach(item=>{
 lista.innerHTML+=`<div class="lista-item">🛒 ${item}</div>`;
 });
 }
+/* -------- ASSISTENTE INTELIGENTE -------- */
+
+function gerarMensagemAI(){
+
+let msg="🌸 Tudo sob controle hoje.";
+
+if(tarefas.length > 5){
+msg="⚡ Muitas tarefas hoje. Priorize só o essencial.";
+}
+
+if(cardapio.length >=5){
+msg="🍽 Semana bem planejada! Talvez preparar refeições adiantadas ajude.";
+}
+
+if(consultas.length > 0){
+msg="📅 Você tem compromissos agendados. Confira as consultas.";
+}
+
+if(remedios.length > 0){
+msg="💊 Não esqueça seus horários de remédio hoje.";
+}
+
+document.getElementById("mensagemAI").innerText = msg;
+}
+
+gerarMensagemAI();
 </script>
 
 </body>
