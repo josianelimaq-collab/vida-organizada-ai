@@ -179,6 +179,32 @@ border-radius:10px;
 
 <h3>🥗 Nutrição Adaptativa IA</h3>
 
+<div class="card">
+
+<h3>🧠 Corpo Inteligente IA</h3>
+
+<label>Peso (kg)</label>
+<input id="pesoUsuario" type="number" placeholder="Ex: 65">
+
+<label>Altura (cm)</label>
+<input id="alturaUsuario" type="number" placeholder="Ex: 165">
+
+<label>Nível de atividade</label>
+<select id="atividadeUsuario">
+<option value="1.2">Sedentária</option>
+<option value="1.37">Leve (rotina casa)</option>
+<option value="1.55">Moderada</option>
+<option value="1.75">Alta</option>
+</select>
+
+<button class="acao" onclick="calcularCorpoIA()">
+Calcular metabolismo
+</button>
+
+<div id="resultadoCorpoIA" style="margin-top:10px;"></div>
+
+</div>
+  
 <div id="analiseIA">
 Analisando seus hábitos alimentares...
 </div>
@@ -1525,6 +1551,99 @@ setInterval(()=>{
 analisarPadraoAlimentar();
 alertaEnergia();
 aprendizadoIA();
+},60000);
+
+/* ===========================
+   CORPO INTELIGENTE IA
+=========================== */
+
+let metabolismoBase = 0;
+let gastoDiario = 0;
+
+function calcularCorpoIA(){
+
+const peso = Number(document.getElementById("pesoUsuario").value);
+const altura = Number(document.getElementById("alturaUsuario").value);
+const atividade = Number(document.getElementById("atividadeUsuario").value);
+
+if(!peso || !altura){
+alert("Preencha peso e altura");
+return;
+}
+
+/* Fórmula Mifflin-St Jeor (adaptada) */
+metabolismoBase = (10*peso)+(6.25*altura)-(5*30)-161;
+
+gastoDiario = metabolismoBase * atividade;
+
+/* ajusta meta automática */
+document.getElementById("metaCalorias").value =
+Math.round(gastoDiario);
+
+document.getElementById("resultadoCorpoIA").innerHTML = `
+🔥 Metabolismo base: <b>${Math.round(metabolismoBase)} kcal</b><br>
+⚡ Gasto diário estimado: <b>${Math.round(gastoDiario)} kcal</b><br>
+✅ Meta calórica ajustada automaticamente
+`;
+
+localStorage.setItem("corpoIA",
+JSON.stringify({peso,altura,atividade,gastoDiario}));
+}
+
+/* ===== DETECTOR DE CANSAÇO ===== */
+
+function detectarCansacoIA(){
+
+if(!gastoDiario) return;
+
+const meta = Number(document.getElementById("metaCalorias").value);
+
+if(caloriasHoje < meta*0.4){
+
+document.getElementById("analiseIA").innerText =
+"😴 Baixa ingestão detectada. Seu corpo pode ficar cansado hoje.";
+}
+}
+
+/* ===== HIDRATAÇÃO INTELIGENTE ===== */
+
+function hidratarIA(){
+
+const metaAgua = Number(localStorage.getItem("metaAgua")) || 2000;
+
+if(aguaHoje < metaAgua*0.5){
+
+document.getElementById("analiseIA").innerText =
+"💧 Hidrate-se! Baixo consumo de água detectado.";
+}
+}
+
+/* ===== PREVISÃO DE ENERGIA DO DIA ===== */
+
+function previsaoEnergia(){
+
+const hora = new Date().getHours();
+
+let msg="";
+
+if(hora < 12)
+msg="🌅 Energia ideal para tarefas importantes.";
+
+else if(hora < 18)
+msg="☀️ Mantenha refeições leves para evitar queda de energia.";
+
+else
+msg="🌙 Priorize refeições leves e descanso.";
+
+document.getElementById("resultadoCorpoIA").innerHTML +=
+`<br><br>${msg}`;
+}
+
+/* LOOP DO CORPO IA */
+setInterval(()=>{
+detectarCansacoIA();
+hidratarIA();
+previsaoEnergia();
 },60000);
   
 </script>
