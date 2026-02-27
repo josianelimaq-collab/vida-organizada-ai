@@ -166,11 +166,23 @@ border-radius:10px;
 </div>
 </div>
 
+<!-- CARDÁPIO -->
+<div id="cardapio" class="tela">
+<div class="card">
+<h3>🍽 Cardápio da Semana</h3>
+
+<div id="cardapioLista"></div>
+
+<button class="acao" onclick="salvarCardapio()">Salvar Cardápio</button>
+</div>
+</div>
+
 <!-- MENU -->
 <div class="menu">
 <button onclick="trocar('tarefas')">🏠</button>
 <button onclick="trocar('consultas')">📅</button>
 <button onclick="trocar('rotina')">🧠</button>
+<button onclick="trocar('cardapio')">🍽</button>
 <button onclick="trocar('remedios')">💊</button>
 </div>
 
@@ -284,6 +296,53 @@ renderConsultas();
 renderRotina();
 renderRemedios();
 
+/* -------- CARDÁPIO -------- */
+
+const dias = [
+"Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"
+];
+
+let cardapio = carregar("cardapio");
+
+function renderCardapio(){
+const area=document.getElementById("cardapioLista");
+area.innerHTML="";
+
+dias.forEach((dia,i)=>{
+const dados = cardapio[i] || {cafe:"",almoco:"",jantar:""};
+
+area.innerHTML+=`
+<div class="card">
+<strong>${dia}</strong>
+
+<input placeholder="Café da manhã"
+value="${dados.cafe}"
+oninput="updateCardapio(${i},'cafe',this.value)">
+
+<input placeholder="Almoço"
+value="${dados.almoco}"
+oninput="updateCardapio(${i},'almoco',this.value)">
+
+<input placeholder="Jantar"
+value="${dados.jantar}"
+oninput="updateCardapio(${i},'jantar',this.value)">
+</div>
+`;
+});
+}
+
+function updateCardapio(i,tipo,valor){
+if(!cardapio[i]) cardapio[i]={};
+cardapio[i][tipo]=valor;
+}
+
+function salvarCardapio(){
+salvar("cardapio",cardapio);
+alert("Cardápio salvo ✅");
+}
+
+renderCardapio();
+  
 </script>
 
 </body>
