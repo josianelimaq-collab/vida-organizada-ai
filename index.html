@@ -181,6 +181,30 @@ border-radius:10px;
 </div>
 </div>
 
+<!-- FINANCEIRO -->
+<div id="financeiro" class="tela">
+
+<div class="card">
+<h3>💰 Controle Financeiro</h3>
+
+<input id="descricaoConta" placeholder="Descrição (ex: Luz, Mercado)">
+<input type="date" id="dataVencimento">
+<input id="valorConta" placeholder="Valor (R$)">
+
+<select id="tipoConta">
+<option value="fixa">Conta Fixa</option>
+<option value="variavel">Conta Variável</option>
+<option value="cartao">Parcelamento Cartão</option>
+<option value="meta">Meta / Poupança</option>
+</select>
+
+<button class="acao" onclick="addConta()">Adicionar</button>
+
+<div id="listaFinanceiro"></div>
+
+</div>
+</div>
+
 <!-- ASSISTENTE -->
 <div id="assistente" class="tela">
 
@@ -218,6 +242,7 @@ Enviar
 <button onclick="trocar('assistente')">🤖</button>
 <button onclick="trocar('cardapio')">🍽</button>
 <button onclick="trocar('compras')">🛒</button>
+<button onclick="trocar('financeiro')">💰</button>
 <button onclick="trocar('remedios')">💊</button>
 </div>
 
@@ -535,6 +560,55 @@ document.querySelectorAll('.tela')
 document.getElementById(id)
 .classList.add('ativa');
 }
+
+/* -------- FINANCEIRO -------- */
+
+let contas = carregar("financeiro");
+
+function renderFinanceiro(){
+const lista=document.getElementById("listaFinanceiro");
+if(!lista) return;
+
+lista.innerHTML="";
+
+contas.forEach((c,i)=>{
+lista.innerHTML+=`
+<div class="lista-item">
+<div>
+<strong>${c.descricao}</strong><br>
+📅 ${c.data} | 💲 R$ ${c.valor} | ${c.tipo}
+</div>
+<button onclick="removerConta(${i})">❌</button>
+</div>`;
+});
+}
+
+function addConta(){
+
+const descricao=document.getElementById("descricaoConta").value;
+const data=document.getElementById("dataVencimento").value;
+const valor=document.getElementById("valorConta").value;
+const tipo=document.getElementById("tipoConta").value;
+
+if(!descricao || !data || !valor) return;
+
+contas.push({descricao,data,valor,tipo});
+salvar("financeiro",contas);
+
+renderFinanceiro();
+
+document.getElementById("descricaoConta").value="";
+document.getElementById("dataVencimento").value="";
+document.getElementById("valorConta").value="";
+}
+
+function removerConta(i){
+contas.splice(i,1);
+salvar("financeiro",contas);
+renderFinanceiro();
+}
+
+renderFinanceiro();
 </script>
 
 </body>
