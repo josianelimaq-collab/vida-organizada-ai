@@ -177,12 +177,22 @@ border-radius:10px;
 </div>
 </div>
 
+<!-- COMPRAS -->
+<div id="compras" class="tela">
+<div class="card">
+<h3>🛒 Lista de Compras</h3>
+<div id="listaCompras"></div>
+<button class="acao" onclick="gerarCompras()">Atualizar Lista</button>
+</div>
+</div>
+  
 <!-- MENU -->
 <div class="menu">
 <button onclick="trocar('tarefas')">🏠</button>
 <button onclick="trocar('consultas')">📅</button>
 <button onclick="trocar('rotina')">🧠</button>
 <button onclick="trocar('cardapio')">🍽</button>
+<button onclick="trocar('compras')">🛒</button>
 <button onclick="trocar('remedios')">💊</button>
 </div>
 
@@ -342,7 +352,34 @@ alert("Cardápio salvo ✅");
 }
 
 renderCardapio();
-  
+
+/* -------- LISTA DE COMPRAS -------- */
+
+function gerarCompras(){
+
+const lista=document.getElementById("listaCompras");
+lista.innerHTML="";
+
+let itens=[];
+
+cardapio.forEach(dia=>{
+if(!dia) return;
+
+Object.values(dia).forEach(refeicao=>{
+if(refeicao){
+refeicao.split(",").forEach(item=>{
+itens.push(item.trim());
+});
+}
+});
+});
+
+const unicos=[...new Set(itens)];
+
+unicos.forEach(item=>{
+lista.innerHTML+=`<div class="lista-item">🛒 ${item}</div>`;
+});
+}
 </script>
 
 </body>
