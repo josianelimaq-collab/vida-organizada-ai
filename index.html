@@ -175,6 +175,35 @@ border-radius:10px;
 <div class="card">
 <h3>🍽 Cardápio da Semana</h3>
 
+<div id="analiseIA">
+Analisando seus hábitos alimentares...
+</div>
+
+<button class="acao" onclick="gerarPlanoAutomatico()">
+✨ Gerar plano automático do dia
+</button>
+
+<label>Meta diária de calorias</label>
+<input id="metaCalorias" type="number" placeholder="Ex: 2000">
+
+<div>
+Consumido hoje:
+<b id="caloriasHoje">0 kcal</b>
+</div>
+
+<button class="acao" onclick="sugerirRefeicoesIA()">
+✨ Criar cardápio inteligente do dia
+</button>
+
+<div id="planoIA" style="margin-top:10px;"></div>
+
+<div>
+Status:
+<b id="statusCalorias">—</b>
+</div>
+
+<hr>
+
 <div class="card">
 
 <h3>🥗 Nutrição Adaptativa IA</h3>
