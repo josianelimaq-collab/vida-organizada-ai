@@ -181,22 +181,28 @@ border-radius:10px;
 </div>
 </div>
 
-<div class="tela" id="assistente">
+<div id="assistente" class="tela">
 
-<h2>🤖 Assistente Vivo</h2>
+<h2>🤖 Assistente Vida AI</h2>
 
-<input
-id="mensagemAssistente"
-placeholder="Converse comigo..."
-style="width:100%;padding:12px;border-radius:10px;border:none;margin-top:10px;"
->
+<div style="
+background:white;
+padding:15px;
+border-radius:12px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+">
 
-<button onclick="responderAssistente()" style="margin-top:10px;padding:12px;border:none;border-radius:10px;background:#6c8cff;color:white;">
+<p id="mensagemAssistente">
+Olá 🌸 Estou aqui para te ajudar a organizar seu dia.
+</p>
+
+<input id="pergunta" placeholder="Digite algo..." style="width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc;">
+
+<button onclick="responderAssistente()" style="margin-top:10px;">
 Enviar
 </button>
 
-<p id="respostaAssistente" style="margin-top:20px;font-size:16px;"></p>
-
+</div>
 </div>
   
 <!-- COMPRAS -->
@@ -509,26 +515,23 @@ document.getElementById("mensagemAI").innerText = mensagem;
 copilotoAI();
 setInterval(copilotoAI, 60000);
 
+<script>
 function responderAssistente(){
+  const pergunta = document.getElementById("pergunta").value.toLowerCase();
+  const resposta = document.getElementById("mensagemAssistente");
 
-const msg = document.getElementById("mensagemAssistente").value.toLowerCase();
-let resposta = "";
-
-if(msg.includes("organizar")){
-resposta = "🌸 Vamos focar em 3 tarefas principais hoje.";
-}
-else if(msg.includes("cansada")){
-resposta = "💛 Faça apenas o essencial. Você já está fazendo muito.";
-}
-else if(msg.includes("cardapio")){
-resposta = "🍽️ Posso ajudar a montar o cardápio da semana.";
-}
-else{
-resposta = "🤖 Estou aqui para ajudar sua rotina.";
-}
-
-document.getElementById("respostaAssistente").innerText = resposta;
-document.getElementById("mensagemAssistente").value = "";
+  if(pergunta.includes("cansada")){
+    resposta.innerText = "🌙 Que tal diminuir o ritmo hoje e focar só no essencial?";
+  }
+  else if(pergunta.includes("cardapio")){
+    resposta.innerText = "🍽️ Posso te ajudar a montar o cardápio da semana!";
+  }
+  else if(pergunta.includes("tarefas")){
+    resposta.innerText = "✅ Vamos escolher apenas 3 tarefas principais hoje.";
+  }
+  else{
+    resposta.innerText = "🤖 Estou aprendendo! Tente falar sobre rotina, tarefas ou cardápio.";
+  }
 }
 </script>
 
