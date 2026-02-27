@@ -175,6 +175,26 @@ border-radius:10px;
 <div class="card">
 <h3>🍽 Cardápio da Semana</h3>
 
+<div class="card">
+
+<h3>🔥 Nutrição Inteligente</h3>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+
+<div>🔥 Calorias da semana<br>
+<b id="caloriasSemana">0 kcal</b></div>
+
+<div>🤖 Status IA<br>
+<b id="statusDieta">Analisando...</b></div>
+
+</div>
+
+<button class="acao" onclick="sugerirRefeicoes()">
+✨ Sugerir refeições inteligentes
+</button>
+
+</div>
+  
 <div id="cardapioLista"></div>
 
 <button class="acao" onclick="salvarCardapio()">Salvar Cardápio</button>
@@ -458,6 +478,10 @@ oninput="updateCardapio(${i},'almoco',this.value)">
 <input placeholder="Jantar"
 value="${dados.jantar}"
 oninput="updateCardapio(${i},'jantar',this.value)">
+
+<input placeholder="Lanches"
+value="${dados.lanche || ""}"
+oninput="updateCardapio(${i},'lanche',this.value)">
 </div>
 `;
 });
@@ -1066,6 +1090,109 @@ salvarContas();
 renderEntradas();
 atualizarSaldoGeral();
 setInterval(verificarRecorrentes,60000);
+
+/* ==========================
+   CARDÁPIO INTELIGENTE IA
+========================== */
+
+/* banco simples de calorias */
+const caloriasDB = {
+"arroz":130,
+"feijao":90,
+"frango":165,
+"ovo":70,
+"banana":90,
+"maça":80,
+"pão":140,
+"salada":40,
+"carne":250,
+"macarrão":220,
+"iogurte":120,
+"aveia":110
+};
+
+function calcularCalorias(){
+
+let total = 0;
+
+cardapio.forEach(dia=>{
+
+if(!dia) return;
+
+Object.values(dia).forEach(refeicao=>{
+
+if(!refeicao) return;
+
+refeicao.toLowerCase().split(",").forEach(item=>{
+
+item=item.trim();
+
+for(const alimento in caloriasDB){
+if(item.includes(alimento)){
+total += caloriasDB[alimento];
+}
+}
+
+});
+
+});
+
+});
+
+const el=document.getElementById("caloriasSemana");
+if(el) el.innerText = total+" kcal";
+
+analisarDieta(total);
+}
+
+/* ===== IA ANALISA DIETA ===== */
+
+function analisarDieta(calorias){
+
+const status=document.getElementById("statusDieta");
+if(!status) return;
+
+if(calorias < 4000){
+status.innerText="⚠️ Pouca ingestão energética";
+}
+else if(calorias < 9000){
+status.innerText="✅ Equilibrado";
+}
+else{
+status.innerText="🔥 Alta ingestão calórica";
+}
+
+}
+
+/* ===== SUGESTÕES IA ===== */
+
+function sugerirRefeicoes(){
+
+const ideias = [
+"Frango, arroz, salada",
+"Ovo, pão integral, banana",
+"Iogurte, aveia, fruta",
+"Carne, legumes, arroz",
+"Macarrão, frango desfiado"
+];
+
+dias.forEach((dia,i)=>{
+
+if(!cardapio[i]) cardapio[i]={};
+
+cardapio[i].almoco =
+ideias[Math.floor(Math.random()*ideias.length)];
+
+});
+
+renderCardapio();
+calcularCalorias();
+
+alert("Cardápio inteligente criado ✨");
+}
+
+/* recalcula sempre */
+setInterval(calcularCalorias,2000);
   
 </script>
 
