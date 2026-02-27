@@ -186,6 +186,21 @@ border-radius:10px;
 
 <div class="card">
 <h3>💰 Controle Financeiro</h3>
+
+<div class="card">
+
+<h3>💵 Entradas de Dinheiro</h3>
+
+<input id="descricaoEntrada" placeholder="Ex: Salário, Pix, Venda">
+<input id="valorEntrada" type="number" placeholder="Valor recebido">
+
+<button class="acao" onclick="addEntrada()">
+Adicionar Entrada
+</button>
+
+<div id="listaEntradas"></div>
+
+</div>
   
 <div class="card">
   
@@ -241,6 +256,13 @@ margin-top:10px;
 </select>
   
 <button class="acao" onclick="addConta()">Adicionar</button>
+
+<select id="recorrente">
+<option value="nao">Pagamento único</option>
+<option value="sim">🔁 Recorrente mensal</option>
+</select>
+
+<input id="parcelas" type="number" placeholder="Qtd parcelas (ex: 12)">
 
 <div id="listaFinanceiro"></div>
 
@@ -867,6 +889,183 @@ atualizarSaldoNubank();
 
 /* iniciar */
 atualizarSaldoNubank();  
+
+/* ================================
+   BANCO DIGITAL COMPLETO
+================================ */
+
+/* ===== ENTRADAS ===== */
+
+let entradas = JSON.parse(localStorage.getItem("entradas")) || [];
+
+function salvarEntradas(){
+localStorage.setItem("entradas", JSON.stringify(entradas));
+renderEntradas();
+atualizarSaldoGeral();
+}
+
+function addEntrada(){
+
+const descricao =
+document.getElementById("descricaoEntrada").value;
+
+const valor =
+Number(document.getElementById("valorEntrada").value);
+
+if(!descricao || !valor) return;
+
+entradas.push({descricao,valor});
+
+document.getElementById("descricaoEntrada").value="";
+document.getElementById("valorEntrada").value="";
+
+salvarEntradas();
+}
+
+function renderEntradas(){
+
+const lista=document.getElementById("listaEntradas");
+if(!lista) return;
+
+lista.innerHTML="";
+
+entradas.forEach((e,i)=>{
+
+lista.innerHTML+=`
+<div class="lista-item">
+💵 ${e.descricao} — R$ ${e.valor.toFixed(2)}
+<button onclick="removerEntrada(${i})">❌</button>
+</div>`;
+});
+}
+
+function removerEntrada(i){
+entradas.splice(i,1);
+salvarEntradas();
+}
+
+/* ===== PARCELAMENTO + RECORRÊNCIA ===== */
+
+const oldAddConta = addConta;
+
+addConta = function(){
+
+const descricao =
+document.getElementById("descricaoConta").value.trim();
+
+const valor =
+Number(document.getElementById("valorConta").value);
+
+const vencimento =
+document.getElementById("dataVencimento").value;
+
+const tipo =
+document.getElementById("tipoConta").value;
+
+const status =
+document.getElementById("statusConta").value;
+
+const recorrente =
+document.getElementById("recorrente").value;
+
+const parcelas =
+Number(document.getElementById("parcelas").value) || 1;
+
+if(!descricao || !valor || !vencimento){
+alert("Preencha os campos");
+return;
+}
+
+/* criar parcelas automaticamente */
+for(let i=1;i<=parcelas;i++){
+
+contas.push({
+descricao:
+parcelas>1
+? `${descricao} (${i}/${parcelas})`
+: descricao,
+
+valor,
+vencimento,
+tipo,
+status,
+recorrente
+});
+
+}
+
+salvarContas();
+
+document.getElementById("descricaoConta").value="";
+document.getElementById("valorConta").value="";
+document.getElementById("parcelas").value="";
+}
+
+/* ===== SALDO BANCÁRIO REAL ===== */
+
+function atualizarSaldoGeral(){
+
+let totalEntradas = 0;
+let totalSaidas = 0;
+
+entradas.forEach(e=> totalEntradas+=e.valor);
+
+contas.forEach(c=>{
+if(c.status !== "pago"){
+totalSaidas+=Number(c.valor)||0;
+}
+});
+
+const saldo = totalEntradas - totalSaidas;
+
+const saldoEl = document.getElementById("saldoAtual");
+
+if(!saldoEl) return;
+
+saldoEl.innerText =
+"R$ " + saldo.toFixed(2);
+
+/* cores banco */
+if(saldo >= 0){
+saldoEl.style.color="#16a34a";
+}
+else if(saldo>-1000){
+saldoEl.style.color="#f59e0b";
+}
+else{
+saldoEl.style.color="#ef4444";
+}
+
+}
+
+/* ===== RECORRÊNCIA AUTOMÁTICA ===== */
+
+function verificarRecorrentes(){
+
+const hoje = new Date().getDate();
+
+contas.forEach(c=>{
+
+if(c.recorrente==="sim"){
+
+const diaVenc =
+new Date(c.vencimento).getDate();
+
+if(diaVenc===hoje && c.status==="pago"){
+c.status="nao";
+}
+
+}
+
+});
+
+salvarContas();
+}
+
+/* INIT */
+renderEntradas();
+atualizarSaldoGeral();
+setInterval(verificarRecorrentes,60000);
   
 </script>
 
