@@ -642,16 +642,6 @@ contas.splice(i,1);
 salvarContas();
 }
 
-/* ===== FINANCEIRO INTELIGENTE ===== */
-
-let contas = JSON.parse(localStorage.getItem("contas")) || [];
-
-function salvarContas(){
-localStorage.setItem("contas", JSON.stringify(contas));
-renderFinanceiro();
-calcularResumoFinanceiro();
-}
-
 /* RENDER LISTA */
 function renderFinanceiro(){
 
