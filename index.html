@@ -181,28 +181,48 @@ border-radius:10px;
 </div>
 </div>
 
+<!-- FINANCEIRO -->
+<div id="financeiro" class="tela">
+
+<div class="card">
+<h3>💰 Controle Financeiro</h3>
+
+<input id="descricaoConta" placeholder="Descrição (ex: Luz, Mercado)">
+<input type="date" id="dataVencimento">
+<input id="valorConta" placeholder="Valor (R$)">
+
+<select id="tipoConta">
+<option value="fixa">Conta Fixa</option>
+<option value="variavel">Conta Variável</option>
+<option value="cartao">Parcelamento Cartão</option>
+<option value="meta">Meta / Poupança</option>
+</select>
+
+<button class="acao" onclick="addConta()">Adicionar</button>
+
+<div id="listaFinanceiro"></div>
+
+</div>
+</div>
+
+<!-- ASSISTENTE -->
 <div id="assistente" class="tela">
 
-<h2>🤖 Assistente Vida AI</h2>
-
-<div style="
-background:white;
-padding:15px;
-border-radius:12px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
-">
+<div class="card">
+<h3>🤖 Assistente Vida AI</h3>
 
 <p id="mensagemAssistente">
 Olá 🌸 Estou aqui para te ajudar a organizar seu dia.
 </p>
 
-<input id="pergunta" placeholder="Digite algo..." style="width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc;">
+<input id="pergunta" placeholder="Digite algo..." />
 
-<button onclick="responderAssistente()" style="margin-top:10px;">
+<button class="acao" onclick="responderAssistente()">
 Enviar
 </button>
 
 </div>
+
 </div>
   
 <!-- COMPRAS -->
@@ -215,13 +235,14 @@ Enviar
 </div>
   
 <!-- MENU -->
-<div class="menu">
+<div class="menuApp">
 <button onclick="trocar('tarefas')">🏠</button>
 <button onclick="trocar('consultas')">📅</button>
 <button onclick="trocar('rotina')">🧠</button>
-<button onclick="abrirTela('assistente')">🤖</button>
+<button onclick="trocar('assistente')">🤖</button>
 <button onclick="trocar('cardapio')">🍽</button>
 <button onclick="trocar('compras')">🛒</button>
+<button onclick="trocar('financeiro')">💰</button>
 <button onclick="trocar('remedios')">💊</button>
 </div>
 
@@ -386,10 +407,10 @@ renderCardapio();
 
 function gerarCompras(){
 
-const lista=document.getElementById("listaCompras");
-lista.innerHTML="";
+const lista = document.getElementById("listaCompras");
+lista.innerHTML = "";
 
-let itens=[];
+let itens = [];
 
 cardapio.forEach(dia=>{
 if(!dia) return;
@@ -403,34 +424,18 @@ itens.push(item.trim());
 });
 });
 
-const unicos=[...new Set(itens)];
+const unicos = [...new Set(itens)];
 
 unicos.forEach(item=>{
-lista.innerHTML+=`<div class="lista-item">🛒 ${item}
-
-{tela === "assistente" && (
-  <div style={{ padding: 20 }}>
-    <h2>🤖 Assistente Vivo</h2>
-
-    <input
-      type="text"
-      placeholder="Digite aqui..."
-      value={mensagem}
-      onChange={(e) => setMensagem(e.target.value)}
-      style={{ width: "100%", padding: 10, borderRadius: 8 }}
-    />
-
-    <button
-      onClick={responderAssistente}
-      style={{ marginTop: 10, padding: 10 }}
-    >
-      Enviar
-    </button>
-
-    <p style={{ marginTop: 20 }}>{resposta}</p>
-</div>`;
+lista.innerHTML += `
+<div class="lista-item">
+🛒 ${item}
+</div>
+`;
 });
+
 }
+
 /* -------- ASSISTENTE INTELIGENTE -------- */
 
 function gerarMensagemAI(){
@@ -515,24 +520,95 @@ document.getElementById("mensagemAI").innerText = mensagem;
 copilotoAI();
 setInterval(copilotoAI, 60000);
 
-<script>
+/* -------- ASSISTENTE -------- */
+
 function responderAssistente(){
-  const pergunta = document.getElementById("pergunta").value.toLowerCase();
-  const resposta = document.getElementById("mensagemAssistente");
+  const pergunta = document
+    .getElementById("pergunta")
+    .value.toLowerCase();
+
+  const resposta =
+    document.getElementById("mensagemAssistente");
 
   if(pergunta.includes("cansada")){
-    resposta.innerText = "🌙 Que tal diminuir o ritmo hoje e focar só no essencial?";
+    resposta.innerText =
+      "🌙 Que tal diminuir o ritmo hoje e focar só no essencial?";
   }
   else if(pergunta.includes("cardapio")){
-    resposta.innerText = "🍽️ Posso te ajudar a montar o cardápio da semana!";
+    resposta.innerText =
+      "🍽️ Posso te ajudar a montar o cardápio da semana!";
   }
   else if(pergunta.includes("tarefas")){
-    resposta.innerText = "✅ Vamos escolher apenas 3 tarefas principais hoje.";
+    resposta.innerText =
+      "✅ Vamos escolher apenas 3 tarefas principais hoje.";
   }
   else{
-    resposta.innerText = "🤖 Estou aprendendo! Tente falar sobre rotina, tarefas ou cardápio.";
+    resposta.innerText =
+      "🤖 Estou aprendendo! Fale sobre rotina, tarefas ou cardápio.";
   }
 }
+/* -------- ASSISTENTE -------- */
+
+function abrirAssistente(){
+mostrarTela("assistente");
+}
+
+function abrirTela(id){
+document.querySelectorAll('.tela')
+.forEach(t=>t.classList.remove('ativa'));
+
+document.getElementById(id)
+.classList.add('ativa');
+}
+
+/* -------- FINANCEIRO -------- */
+
+let contas = carregar("financeiro");
+
+function renderFinanceiro(){
+const lista=document.getElementById("listaFinanceiro");
+if(!lista) return;
+
+lista.innerHTML="";
+
+contas.forEach((c,i)=>{
+lista.innerHTML+=`
+<div class="lista-item">
+<div>
+<strong>${c.descricao}</strong><br>
+📅 ${c.data} | 💲 R$ ${c.valor} | ${c.tipo}
+</div>
+<button onclick="removerConta(${i})">❌</button>
+</div>`;
+});
+}
+
+function addConta(){
+
+const descricao=document.getElementById("descricaoConta").value;
+const data=document.getElementById("dataVencimento").value;
+const valor=document.getElementById("valorConta").value;
+const tipo=document.getElementById("tipoConta").value;
+
+if(!descricao || !data || !valor) return;
+
+contas.push({descricao,data,valor,tipo});
+salvar("financeiro",contas);
+
+renderFinanceiro();
+
+document.getElementById("descricaoConta").value="";
+document.getElementById("dataVencimento").value="";
+document.getElementById("valorConta").value="";
+}
+
+function removerConta(i){
+contas.splice(i,1);
+salvar("financeiro",contas);
+renderFinanceiro();
+}
+
+renderFinanceiro();
 </script>
 
 </body>
