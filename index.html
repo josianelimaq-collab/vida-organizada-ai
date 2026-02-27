@@ -636,6 +636,7 @@ salvarContas();
 }
 
 function renderFinanceiro(){
+  
 contas.forEach((c,i)=>{
 
 const status = c.paga
@@ -666,8 +667,6 @@ ${c.paga ? "↩️ Desfazer" : "✔️ Pagar"}
 
 </div>`;
 });
-
-}
 
 renderFinanceiro();
 calcularResumoFinanceiro();
