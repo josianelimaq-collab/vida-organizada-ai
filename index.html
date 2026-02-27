@@ -215,7 +215,7 @@ Enviar
 </div>
   
 <!-- MENU -->
-<div class="menu">
+<div class="menuApp">
 <button onclick="trocar('tarefas')">🏠</button>
 <button onclick="trocar('consultas')">📅</button>
 <button onclick="trocar('rotina')">🧠</button>
@@ -408,27 +408,6 @@ const unicos=[...new Set(itens)];
 unicos.forEach(item=>{
 lista.innerHTML+=`<div class="lista-item">🛒 ${item}
 
-{tela === "assistente" && (
-  <div style={{ padding: 20 }}>
-    <h2>🤖 Assistente Vivo</h2>
-
-    <input
-      type="text"
-      placeholder="Digite aqui..."
-      value={mensagem}
-      onChange={(e) => setMensagem(e.target.value)}
-      style={{ width: "100%", padding: 10, borderRadius: 8 }}
-    />
-
-    <button
-      onClick={responderAssistente}
-      style={{ marginTop: 10, padding: 10 }}
-    >
-      Enviar
-    </button>
-
-    <p style={{ marginTop: 20 }}>{resposta}</p>
-</div>`;
 });
 }
 /* -------- ASSISTENTE INTELIGENTE -------- */
@@ -515,22 +494,31 @@ document.getElementById("mensagemAI").innerText = mensagem;
 copilotoAI();
 setInterval(copilotoAI, 60000);
 
-<script>
+/* -------- ASSISTENTE -------- */
+
 function responderAssistente(){
-  const pergunta = document.getElementById("pergunta").value.toLowerCase();
-  const resposta = document.getElementById("mensagemAssistente");
+  const pergunta = document
+    .getElementById("pergunta")
+    .value.toLowerCase();
+
+  const resposta =
+    document.getElementById("mensagemAssistente");
 
   if(pergunta.includes("cansada")){
-    resposta.innerText = "🌙 Que tal diminuir o ritmo hoje e focar só no essencial?";
+    resposta.innerText =
+      "🌙 Que tal diminuir o ritmo hoje e focar só no essencial?";
   }
   else if(pergunta.includes("cardapio")){
-    resposta.innerText = "🍽️ Posso te ajudar a montar o cardápio da semana!";
+    resposta.innerText =
+      "🍽️ Posso te ajudar a montar o cardápio da semana!";
   }
   else if(pergunta.includes("tarefas")){
-    resposta.innerText = "✅ Vamos escolher apenas 3 tarefas principais hoje.";
+    resposta.innerText =
+      "✅ Vamos escolher apenas 3 tarefas principais hoje.";
   }
   else{
-    resposta.innerText = "🤖 Estou aprendendo! Tente falar sobre rotina, tarefas ou cardápio.";
+    resposta.innerText =
+      "🤖 Estou aprendendo! Fale sobre rotina, tarefas ou cardápio.";
   }
 }
 </script>
