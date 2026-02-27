@@ -635,20 +635,68 @@ contas.splice(i,1);
 salvarContas();
 }
 
+/* ===== FINANCEIRO INTELIGENTE ===== */
+
+let contas = JSON.parse(localStorage.getItem("contas")) || [];
+
+function salvarContas(){
+localStorage.setItem("contas", JSON.stringify(contas));
+renderFinanceiro();
+calcularResumoFinanceiro();
+}
+
+function addConta(){
+
+const descricao = document.getElementById("descricaoConta").value.trim();
+const valor = Number(document.getElementById("valorConta").value);
+const vencimento = document.getElementById("dataVencimento").value;
+const tipo = document.getElementById("tipoConta").value;
+
+if(!descricao || !valor || !vencimento){
+alert("Preencha todos os campos ✅");
+return;
+}
+
+contas.push({
+descricao,
+valor,
+vencimento,
+tipo,
+paga:false
+});
+
+salvarContas();
+
+document.getElementById("descricaoConta").value="";
+document.getElementById("valorConta").value="";
+document.getElementById("dataVencimento").value="";
+}
+
+function removerConta(i){
+contas.splice(i,1);
+salvarContas();
+}
+
+function togglePago(i){
+contas[i].paga = !contas[i].paga;
+salvarContas();
+}
+
+/* RENDER LISTA */
 function renderFinanceiro(){
-  
+
+const lista = document.getElementById("listaFinanceiro");
+if(!lista) return;
+
+lista.innerHTML="";
+
 contas.forEach((c,i)=>{
 
-const status = c.paga
-? "✅ Paga"
-: "⏳ Pendente";
-
-const cor = c.paga
-? "#e8ffe8"
-: "#fff4e8";
+const status = c.paga ? "✅ Paga" : "⏳ Pendente";
+const cor = c.paga ? "#e8ffe8" : "#fff4e8";
 
 lista.innerHTML += `
-<div class="item" style="background:${cor}">
+<div class="lista-item" style="background:${cor}">
 
 <div>
 <b>${c.descricao}</b><br>
@@ -668,57 +716,41 @@ ${c.paga ? "↩️ Desfazer" : "✔️ Pagar"}
 </div>`;
 });
 
-renderFinanceiro();
-calcularResumoFinanceiro();
-  
+}
+
+/* RESUMO NUBANK */
 function calcularResumoFinanceiro(){
 
-let totalMes = 0;
-let fixas = 0;
-let variaveis = 0;
-let hoje = new Date();
-let alertas = "";
+let totalMes=0;
+let fixas=0;
+let variaveis=0;
 
-contas.forEach(c => {
+contas.forEach(c=>{
 
-let valor = Number(c.valor) || 0;
-totalMes += valor;
+const valor = Number(c.valor)||0;
+totalMes+=valor;
 
-if(c.tipo === "Conta Fixa")
-fixas += valor;
-else
-variaveis += valor;
-
-if(c.vencimento){
-
-let dataConta = new Date(c.vencimento);
-let dias = (dataConta - hoje)/(1000*60*60*24);
-
-if(dias >= 0 && dias <= 3){
-alertas += `<div class="item" style="background:#ffe8e8">
-⚠️ ${c.descricao} vence em ${Math.ceil(dias)} dias
-</div>`;
-}
-
-}
+if(c.tipo==="fixa") fixas+=valor;
+else variaveis+=valor;
 
 });
 
 document.getElementById("totalMes").innerText =
-"R$ " + totalMes.toFixed(2);
+"R$ "+totalMes.toFixed(2);
 
 document.getElementById("totalFixas").innerText =
-"R$ " + fixas.toFixed(2);
+"R$ "+fixas.toFixed(2);
 
 document.getElementById("totalVariaveis").innerText =
-"R$ " + variaveis.toFixed(2);
+"R$ "+variaveis.toFixed(2);
 
 document.getElementById("previsaoSaldo").innerText =
-"R$ " + (-totalMes).toFixed(2);
-
-document.getElementById("alertasFinanceiros").innerHTML =
-alertas || "✅ Nenhum vencimento próximo";
+"R$ "+(-totalMes).toFixed(2);
 }
+
+/* INIT */
+renderFinanceiro();
+calcularResumoFinanceiro();
 
 /* ===== FINANCEIRO ===== */
 
