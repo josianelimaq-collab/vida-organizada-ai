@@ -386,10 +386,10 @@ renderCardapio();
 
 function gerarCompras(){
 
-const lista=document.getElementById("listaCompras");
-lista.innerHTML="";
+const lista = document.getElementById("listaCompras");
+lista.innerHTML = "";
 
-let itens=[];
+let itens = [];
 
 cardapio.forEach(dia=>{
 if(!dia) return;
@@ -403,13 +403,18 @@ itens.push(item.trim());
 });
 });
 
-const unicos=[...new Set(itens)];
+const unicos = [...new Set(itens)];
 
 unicos.forEach(item=>{
-lista.innerHTML+=`<div class="lista-item">🛒 ${item}
-
+lista.innerHTML += `
+<div class="lista-item">
+🛒 ${item}
+</div>
+`;
 });
+
 }
+
 /* -------- ASSISTENTE INTELIGENTE -------- */
 
 function gerarMensagemAI(){
