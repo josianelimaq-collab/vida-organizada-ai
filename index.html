@@ -652,55 +652,6 @@ renderFinanceiro();
 calcularResumoFinanceiro();
 }
 
-function addConta(){
-<script>
-let contas = JSON.parse(localStorage.getItem("contasFinanceiras")) || [];
-
-function salvarContas(){
-localStorage.setItem("contasFinanceiras", JSON.stringify(contas));
-renderContas();
-atualizarSaldo();
-}
-
-function adicionarConta(){
-
-const nome = document.getElementById("nomeConta").value;
-const valor = parseFloat(document.getElementById("valorConta").value);
-const data = document.getElementById("dataConta").value;
-const tipo = document.getElementById("tipoConta").value;
-const status = document.getElementById("statusConta").value;
-
-if(!nome || !valor){
-alert("Preencha nome e valor");
-return;
-}
-
-contas.push({
-nome,
-valor,
-data,
-tipo,
-status
-});
-
-document.getElementById("nomeConta").value="";
-document.getElementById("valorConta").value="";
-document.getElementById("dataConta").value="";
-
-salvarContas();
-}
-</script>
-
-function removerConta(i){
-contas.splice(i,1);
-salvarContas();
-}
-
-function togglePago(i){
-contas[i].paga = !contas[i].paga;
-salvarContas();
-}
-
 /* RENDER LISTA */
 function renderFinanceiro(){
 
