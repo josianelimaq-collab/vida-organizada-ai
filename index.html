@@ -132,7 +132,7 @@ border-radius:10px;
 <div id="tarefas" class="tela ativa">
 <div class="card">
 <h3>Tarefas de Casa</h3>
-<input id="novaTarefa" placeholder="Adicionar tarefa...">
+< id="novaTarefa" placeholder="Adicionar tarefa...">
 <button onclick="addTarefa()">Adicionar</button>
 <div id="listaTarefas" class="lista"></div>
 </div>
@@ -142,7 +142,7 @@ border-radius:10px;
 <div id="consultas" class="tela">
 <div class="card">
 <h3>Consultas</h3>
-<input id="nomeConsulta" placeholder="Nome">
+< id="nomeConsulta" placeholder="Nome">
 <input type="date" id="dataConsulta">
 <button onclick="addConsulta()">Salvar</button>
 <div id="listaConsultas" class="lista"></div>
@@ -210,13 +210,7 @@ Analisando seus hábitos alimentares...
 </div>
 
 <button class="acao" onclick="gerarPlanoAutomatico()">
-✨ Criar cardápio inteligente do dia
-</button>
 
-<div id="planoIA" style="margin-top:10px;"></div>
-
-</div>  
-  
 <label>Meta diária de calorias</label>
 <input id="metaCalorias" type="number" placeholder="Ex: 2000">
 
@@ -225,6 +219,14 @@ Consumido hoje:
 <b id="caloriasHoje">0 kcal</b>
 </div>
 
+<button class="acao" onclick="sugerirRefeicoesIA()">  
+✨ Criar cardápio inteligente do dia
+</button>
+
+<div id="planoIA" style="margin-top:10px;"></div>
+
+</div>  
+  
 <div>
 Status:
 <b id="statusCalorias">—</b>
@@ -1723,8 +1725,8 @@ localStorage.setItem("metaAgua", meta);
 
 function sugerirRefeicoesIA(){
 
-const area = document.getElementById("sugestoesRefeicoes");
-
+const area = document.getElementById("planoIA");
+  
 if(!area) return;
 
 /* sugestões focadas em emagrecimento */
