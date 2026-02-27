@@ -278,6 +278,10 @@ Bebido hoje:
 ✨ Sugerir refeições inteligentes
 </button>
 
+<button class="acao" onclick="sugerirRefeicaoEmagrecimento()">
+✨ Sugerir refeição para emagrecimento
+</button>
+  
 </div>
   
 <div id="cardapioLista"></div>
@@ -1286,6 +1290,68 @@ setInterval(calcularCalorias,2000);
 let caloriasHoje = Number(localStorage.getItem("caloriasHoje")) || 0;
 let aguaHoje = Number(localStorage.getItem("aguaHoje")) || 0;
 
+/* ==========================
+   BASE DE REFEIÇÕES IA
+   (EMAGRECIMENTO)
+========================== */
+
+const refeicoesIA = [
+
+{nome:"Omelete + fruta", calorias:300, tipo:"leve"},
+{nome:"Frango grelhado + salada", calorias:400, tipo:"saciedade"},
+{nome:"Arroz, feijão e frango", calorias:520, tipo:"completa"},
+{nome:"Iogurte natural + banana", calorias:220, tipo:"lanche"},
+{nome:"Tapioca com ovo", calorias:350, tipo:"equilibrada"},
+{nome:"Salada + atum", calorias:280, tipo:"leve"},
+{nome:"Wrap de frango", calorias:430, tipo:"completa"},
+{nome:"Panqueca de banana", calorias:260, tipo:"lanche"},
+{nome:"Sopa de legumes", calorias:240, tipo:"leve"},
+{nome:"Frango + legumes refogados", calorias:380, tipo:"saciedade"}
+
+];
+
+/* ==========================
+   SUGESTÃO INTELIGENTE
+========================== */
+
+function sugerirRefeicaoEmagrecimento(){
+
+const meta = Number(document.getElementById("metaCalorias").value);
+const restante = meta - caloriasHoje;
+
+if(restante <= 0){
+document.getElementById("analiseIA").innerText =
+"✅ Meta atingida! Prefira chá ou algo leve.";
+return;
+}
+
+/* FILTRA refeições ideais */
+let sugestoes = refeicoesIA.filter(r => r.calorias <= restante);
+
+/* estratégia emagrecimento */
+if(restante < 250){
+sugestoes = sugestoes.filter(r=>r.tipo==="leve" || r.tipo==="lanche");
+}
+else if(restante < 450){
+sugestoes = sugestoes.filter(r=>r.tipo!=="completa");
+}
+
+if(sugestoes.length === 0){
+document.getElementById("analiseIA").innerText =
+"🥗 Hoje prefira algo bem leve para manter o déficit.";
+return;
+}
+
+/* escolhe aleatória inteligente */
+const escolha =
+sugestoes[Math.floor(Math.random()*sugestoes.length)];
+
+document.getElementById("analiseIA").innerText =
+`🍽 Sugestão IA: ${escolha.nome}
+(${escolha.calorias} kcal)
+🔥 Ideal para continuar emagrecendo`;
+}
+  
 /* ===== BASE DE CALORIAS ===== */
 
 const alimentosIA = {
@@ -1645,6 +1711,10 @@ detectarCansacoIA();
 hidratarIA();
 previsaoEnergia();
 },60000);
+
+setInterval(()=>{
+sugerirRefeicaoEmagrecimento();
+},120000);
   
 </script>
 
