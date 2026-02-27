@@ -604,33 +604,30 @@ renderFinanceiro();
 
 function addConta(){
 
-const nome = document.getElementById("nomeConta").value.trim();
+const descricao = document.getElementById("descricaoConta").value.trim();
 const valor = Number(document.getElementById("valorConta").value);
-const data = document.getElementById("dataConta").value;
+const vencimento = document.getElementById("dataVencimento").value;
+const tipo = document.getElementById("tipoConta").value;
 
-if(!nome || !valor || !data){
+if(!descricao || !valor || !vencimento){
 alert("Preencha todos os campos ✅");
 return;
 }
 
 contas.push({
-nome,
+descricao,
 valor,
-data
+vencimento,
+tipo
 });
 
-salvar("contas", contas);
-renderContas();
-
-/* limpa campos */
-document.getElementById("nomeConta").value="";
-document.getElementById("valorConta").value="";
-document.getElementById("dataConta").value="";
-}
-
 salvarContas();
+
+/* limpar campos */
+document.getElementById("descricaoConta").value="";
+document.getElementById("valorConta").value="";
+document.getElementById("dataVencimento").value="";
 }
-calcularResumoFinanceiro();
   
 function removerConta(i){
 contas.splice(i,1);
@@ -658,7 +655,8 @@ R$ ${c.valor} • ${c.tipo}<br>
 }
 
 renderFinanceiro();
-
+calcularResumoFinanceiro();
+  
 function calcularResumoFinanceiro(){
 
 let totalMes = 0;
