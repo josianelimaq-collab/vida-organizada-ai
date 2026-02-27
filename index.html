@@ -181,6 +181,24 @@ border-radius:10px;
 </div>
 </div>
 
+<div class="tela" id="assistente">
+
+<h2>🤖 Assistente Vivo</h2>
+
+<input
+id="mensagemAssistente"
+placeholder="Converse comigo..."
+style="width:100%;padding:12px;border-radius:10px;border:none;margin-top:10px;"
+>
+
+<button onclick="responderAssistente()" style="margin-top:10px;padding:12px;border:none;border-radius:10px;background:#6c8cff;color:white;">
+Enviar
+</button>
+
+<p id="respostaAssistente" style="margin-top:20px;font-size:16px;"></p>
+
+</div>
+  
 <!-- COMPRAS -->
 <div id="compras" class="tela">
 <div class="card">
@@ -195,6 +213,9 @@ border-radius:10px;
 <button onclick="trocar('tarefas')">🏠</button>
 <button onclick="trocar('consultas')">📅</button>
 <button onclick="trocar('rotina')">🧠</button>
+<button onClick={() => setTela("assistente")}>
+🤖 Assistente
+</button>
 <button onclick="trocar('cardapio')">🍽</button>
 <button onclick="trocar('compras')">🛒</button>
 <button onclick="trocar('remedios')">💊</button>
@@ -381,7 +402,29 @@ itens.push(item.trim());
 const unicos=[...new Set(itens)];
 
 unicos.forEach(item=>{
-lista.innerHTML+=`<div class="lista-item">🛒 ${item}</div>`;
+lista.innerHTML+=`<div class="lista-item">🛒 ${item}
+
+{tela === "assistente" && (
+  <div style={{ padding: 20 }}>
+    <h2>🤖 Assistente Vivo</h2>
+
+    <input
+      type="text"
+      placeholder="Digite aqui..."
+      value={mensagem}
+      onChange={(e) => setMensagem(e.target.value)}
+      style={{ width: "100%", padding: 10, borderRadius: 8 }}
+    />
+
+    <button
+      onClick={responderAssistente}
+      style={{ marginTop: 10, padding: 10 }}
+    >
+      Enviar
+    </button>
+
+    <p style={{ marginTop: 20 }}>{resposta}</p>
+</div>`;
 });
 }
 /* -------- ASSISTENTE INTELIGENTE -------- */
@@ -467,6 +510,28 @@ document.getElementById("mensagemAI").innerText = mensagem;
 /* ATUALIZA AUTOMÁTICO */
 copilotoAI();
 setInterval(copilotoAI, 60000);
+
+function responderAssistente(){
+
+const msg = document.getElementById("mensagemAssistente").value.toLowerCase();
+let resposta = "";
+
+if(msg.includes("organizar")){
+resposta = "🌸 Vamos focar em 3 tarefas principais hoje.";
+}
+else if(msg.includes("cansada")){
+resposta = "💛 Faça apenas o essencial. Você já está fazendo muito.";
+}
+else if(msg.includes("cardapio")){
+resposta = "🍽️ Posso ajudar a montar o cardápio da semana.";
+}
+else{
+resposta = "🤖 Estou aqui para ajudar sua rotina.";
+}
+
+document.getElementById("respostaAssistente").innerText = resposta;
+document.getElementById("mensagemAssistente").value = "";
+}
 </script>
 
 </body>
