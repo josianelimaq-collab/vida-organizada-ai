@@ -618,7 +618,8 @@ contas.push({
 descricao,
 valor,
 vencimento,
-tipo
+tipo,
+paga:false
 });
 
 salvarContas();
@@ -635,23 +636,37 @@ salvarContas();
 }
 
 function renderFinanceiro(){
-
-let lista = document.getElementById("listaFinanceiro");
-if(!lista) return;
-
-lista.innerHTML="";
-
 contas.forEach((c,i)=>{
+
+const status = c.paga
+? "✅ Paga"
+: "⏳ Pendente";
+
+const cor = c.paga
+? "#e8ffe8"
+: "#fff4e8";
+
 lista.innerHTML += `
-<div class="item">
+<div class="item" style="background:${cor}">
+
 <div>
 <b>${c.descricao}</b><br>
 R$ ${c.valor} • ${c.tipo}<br>
-📅 ${c.vencimento}
+📅 ${c.vencimento}<br>
+<b>${status}</b>
 </div>
+
+<div>
+<button onclick="togglePago(${i})">
+${c.paga ? "↩️ Desfazer" : "✔️ Pagar"}
+</button>
+
 <button onclick="removerConta(${i})">❌</button>
+</div>
+
 </div>`;
 });
+
 }
 
 renderFinanceiro();
@@ -783,6 +798,14 @@ ${alerta}
 }
 
 document.addEventListener("DOMContentLoaded", renderCartoes);
+
+function togglePago(i){
+
+contas[i].paga = !contas[i].paga;
+
+salvarContas();
+calcularResumoFinanceiro();
+}
   
 </script>
 
