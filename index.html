@@ -221,7 +221,12 @@ margin-top:10px;
 <option value="cartao">Parcelamento Cartão</option>
 <option value="meta">Meta / Poupança</option>
 </select>
-
+  
+<select id="statusConta">
+<option value="nao">❌ Não paga</option>
+<option value="pago">✅ Paga</option>
+</select>
+  
 <button class="acao" onclick="addConta()">Adicionar</button>
 
 <div id="listaFinanceiro"></div>
@@ -608,7 +613,8 @@ const descricao = document.getElementById("descricaoConta").value.trim();
 const valor = Number(document.getElementById("valorConta").value);
 const vencimento = document.getElementById("dataVencimento").value;
 const tipo = document.getElementById("tipoConta").value;
-
+const status = document.getElementById("statusConta").value;
+  
 if(!descricao || !valor || !vencimento){
 alert("Preencha todos os campos ✅");
 return;
@@ -619,7 +625,7 @@ descricao,
 valor,
 vencimento,
 tipo,
-paga:false
+status
 });
 
 salvarContas();
@@ -628,6 +634,7 @@ salvarContas();
 document.getElementById("descricaoConta").value="";
 document.getElementById("valorConta").value="";
 document.getElementById("dataVencimento").value="";
+document.getElementById("statusConta").value = "nao";
 }
   
 function removerConta(i){
@@ -646,31 +653,43 @@ calcularResumoFinanceiro();
 }
 
 function addConta(){
+<script>
+let contas = JSON.parse(localStorage.getItem("contasFinanceiras")) || [];
 
-const descricao = document.getElementById("descricaoConta").value.trim();
-const valor = Number(document.getElementById("valorConta").value);
-const vencimento = document.getElementById("dataVencimento").value;
+function salvarContas(){
+localStorage.setItem("contasFinanceiras", JSON.stringify(contas));
+renderContas();
+atualizarSaldo();
+}
+
+function adicionarConta(){
+
+const nome = document.getElementById("nomeConta").value;
+const valor = parseFloat(document.getElementById("valorConta").value);
+const data = document.getElementById("dataConta").value;
 const tipo = document.getElementById("tipoConta").value;
+const status = document.getElementById("statusConta").value;
 
-if(!descricao || !valor || !vencimento){
-alert("Preencha todos os campos ✅");
+if(!nome || !valor){
+alert("Preencha nome e valor");
 return;
 }
 
 contas.push({
-descricao,
+nome,
 valor,
-vencimento,
+data,
 tipo,
-paga:false
+status
 });
 
-salvarContas();
-
-document.getElementById("descricaoConta").value="";
+document.getElementById("nomeConta").value="";
 document.getElementById("valorConta").value="";
-document.getElementById("dataVencimento").value="";
+document.getElementById("dataConta").value="";
+
+salvarContas();
 }
+</script>
 
 function removerConta(i){
 contas.splice(i,1);
