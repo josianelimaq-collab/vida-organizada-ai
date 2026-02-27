@@ -235,7 +235,7 @@ Status:
 <h4>💧 Água</h4>
 
 <label>Meta diária (ml)</label>
-<input id="metaAgua" type="number" placeholder="Ex: 2000">
+<input id="metaAgua" type="number" onchange="salvarMetaAgua()">
 
 <div>
 Bebido hoje:
@@ -1102,6 +1102,7 @@ valor,
 vencimento,
 tipo,
 status,
+paga: status === "pago",
 recorrente
 });
 
@@ -1281,7 +1282,7 @@ alert("Cardápio inteligente criado ✨");
 }
 
 /* recalcula sempre */
-setInterval(calcularCalorias,2000);
+setInterval(calcularCalorias,15000);
 
 /* ===========================
    NUTRICIONISTA IA COMPLETO
@@ -1496,7 +1497,7 @@ area.innerHTML += `🍽 ${i.nome} (~${i.kcal} kcal)<br>`;
 
 /* ===== ATUALIZA AUTOMÁTICO ===== */
 
-setInterval(atualizarCaloriasHoje,3000);
+setInterval(atualizarCaloriasHoje,15000);
 
 /* iniciar valores */
 document.addEventListener("DOMContentLoaded",()=>{
@@ -1715,6 +1716,11 @@ previsaoEnergia();
 setInterval(()=>{
 sugerirRefeicaoEmagrecimento();
 },120000);
+
+function salvarMetaAgua(){
+const meta = document.getElementById("metaAgua").value;
+localStorage.setItem("metaAgua", meta);
+}  
   
 </script>
 
