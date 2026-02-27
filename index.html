@@ -188,6 +188,7 @@ border-radius:10px;
 <h3>💰 Controle Financeiro</h3>
   
 <div class="card">
+  
 <h3>📊 Painel Financeiro PRO</h3>
 
 <div style="
@@ -224,6 +225,14 @@ margin-top:10px;
 <button class="acao" onclick="addConta()">Adicionar</button>
 
 <div id="listaFinanceiro"></div>
+
+<input id="nomeCartao" placeholder="Nome do cartão">
+<input id="limiteTotal" type="number" placeholder="Limite total">
+<input id="limiteUsado" type="number" placeholder="Total utilizado">
+
+<button onclick="addCartao()">Salvar cartão</button>
+
+<div id="listaCartoes"></div>
 
 </div>
 </div>
@@ -689,6 +698,59 @@ document.getElementById("previsaoSaldo").innerText =
 document.getElementById("alertasFinanceiros").innerHTML =
 alertas || "✅ Nenhum vencimento próximo";
 }
+
+/* ===== FINANCEIRO ===== */
+
+let cartoes = JSON.parse(localStorage.getItem("cartoes") || "[]");
+
+function salvarCartoes(){
+localStorage.setItem("cartoes", JSON.stringify(cartoes));
+}
+
+function addCartao(){
+
+const nome = document.getElementById("nomeCartao").value;
+const total = Number(document.getElementById("limiteTotal").value);
+const usado = Number(document.getElementById("limiteUsado").value);
+
+if(!nome || !total) return;
+
+cartoes.push({nome,total,usado});
+
+salvarCartoes();
+renderCartoes();
+}
+
+function renderCartoes(){
+
+const lista = document.getElementById("listaCartoes");
+if(!lista) return;
+
+lista.innerHTML="";
+
+cartoes.forEach(c=>{
+
+const porcentagem = (c.usado/c.total)*100;
+
+lista.innerHTML += `
+<div style="margin-top:12px">
+<b>${c.nome}</b><br>
+Usado: R$ ${c.usado} / ${c.total}
+
+<div style="background:#eee;height:10px;border-radius:8px;margin-top:6px;">
+<div style="
+height:100%;
+width:${porcentagem}%;
+background:#6c8cff;
+border-radius:8px;">
+</div>
+</div>
+
+</div>`;
+});
+}
+
+document.addEventListener("DOMContentLoaded", renderCartoes);
   
 </script>
 
