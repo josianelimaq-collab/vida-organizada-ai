@@ -179,6 +179,22 @@ border-radius:10px;
 
 <h3>🥗 Nutricionista IA</h3>
 
+<div class="card">
+
+<h3>🧠 Nutrição Adaptativa IA</h3>
+
+<div id="analiseIA">
+Analisando seus hábitos alimentares...
+</div>
+
+<button class="acao" onclick="gerarPlanoAutomatico()">
+✨ Criar cardápio inteligente do dia
+</button>
+
+<div id="planoIA" style="margin-top:10px;"></div>
+
+</div>  
+  
 <label>Meta diária de calorias</label>
 <input id="metaCalorias" type="number" placeholder="Ex: 2000">
 
@@ -1399,6 +1415,121 @@ document.addEventListener("DOMContentLoaded",()=>{
 document.getElementById("aguaHoje").innerText = aguaHoje+" ml";
 atualizarCaloriasHoje();
 });
+
+/* ===========================
+   NUTRIÇÃO ADAPTATIVA IA
+=========================== */
+
+function analisarPadraoAlimentar(){
+
+let refeicoes = 0;
+
+cardapio.forEach(d=>{
+if(!d) return;
+
+Object.values(d).forEach(r=>{
+if(r && r.length > 3) refeicoes++;
+});
+});
+
+let msg="";
+
+if(refeicoes < 5){
+msg="⚠️ Poucas refeições registradas. Seu corpo pode sentir queda de energia.";
+}
+else if(refeicoes <=10){
+msg="✅ Rotina alimentar equilibrada.";
+}
+else{
+msg="🔥 Alimentação bem ativa! Foque em hidratação.";
+}
+
+document.getElementById("analiseIA").innerText = msg;
+}
+
+/* ===== GERADOR DE CARDÁPIO IA ===== */
+
+function gerarPlanoAutomatico(){
+
+const hora = new Date().getHours();
+
+let sugestao = {};
+
+if(hora < 12){
+sugestao = {
+cafe:"banana, aveia, leite",
+almoco:"arroz, frango, salada",
+jantar:"omelete, legumes"
+};
+}
+else if(hora < 18){
+sugestao = {
+cafe:"iogurte, fruta",
+almoco:"carne, arroz, feijao",
+jantar:"sopa de legumes"
+};
+}
+else{
+sugestao = {
+cafe:"vitamina de banana",
+almoco:"frango grelhado, salada",
+jantar:"ovo, legumes leves"
+};
+}
+
+/* aplica no dia atual */
+const hoje = new Date().getDay()-1;
+const index = hoje < 0 ? 6 : hoje;
+
+cardapio[index] = sugestao;
+
+salvar("cardapio", cardapio);
+renderCardapio();
+atualizarCaloriasHoje();
+
+document.getElementById("planoIA").innerHTML =
+"✅ Cardápio inteligente criado automaticamente!";
+}
+
+/* ===== DETECTOR DE BAIXA ENERGIA ===== */
+
+function alertaEnergia(){
+
+const meta = Number(document.getElementById("metaCalorias").value);
+
+if(!meta) return;
+
+if(caloriasHoje < meta*0.5){
+
+document.getElementById("analiseIA").innerText =
+"🔋 Energia baixa detectada. Sugestão: lanche rápido rico em proteína.";
+}
+}
+
+/* ===== IA APRENDE COM USO ===== */
+
+function aprendizadoIA(){
+
+let historico = JSON.parse(localStorage.getItem("historicoIA")) || [];
+
+historico.push({
+data:new Date().toLocaleDateString(),
+calorias:caloriasHoje,
+agua:aguaHoje
+});
+
+if(historico.length > 7) historico.shift();
+
+localStorage.setItem("historicoIA", JSON.stringify(historico));
+}
+
+/* ===== LOOP INTELIGENTE ===== */
+
+setInterval(()=>{
+analisarPadraoAlimentar();
+alertaEnergia();
+aprendizadoIA();
+},60000);
   
 </script>
 
