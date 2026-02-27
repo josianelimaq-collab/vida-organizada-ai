@@ -190,7 +190,20 @@ border-radius:10px;
 <div class="card">
   
 <h3>📊 Painel Financeiro PRO</h3>
+  
+<div style="
+margin-top:15px;
+padding:12px;
+background:#f7f8ff;
+border-radius:14px;
+">
 
+<div><b>💰 Saldo Atual:</b> <span id="saldoAtual">R$ 0</span></div>
+<div><b>📉 Gastos Pagos:</b> <span id="gastosPagos">R$ 0</span></div>
+<div><b>⏳ Pendentes:</b> <span id="gastosPendentes">R$ 0</span></div>
+
+</div>
+  
 <div style="
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -797,6 +810,63 @@ contas[i].paga = !contas[i].paga;
 salvarContas();
 calcularResumoFinanceiro();
 }
+
+/* ===== SALDO INTELIGENTE NUBANK ===== */
+
+function atualizarSaldoNubank(){
+
+let pagos = 0;
+let pendentes = 0;
+
+contas.forEach(c=>{
+
+const valor = Number(c.valor)||0;
+
+if(c.status === "pago"){
+pagos += valor;
+}else{
+pendentes += valor;
+}
+
+});
+
+const saldo = -(pagos + pendentes);
+
+document.getElementById("gastosPagos").innerText =
+"R$ " + pagos.toFixed(2);
+
+document.getElementById("gastosPendentes").innerText =
+"R$ " + pendentes.toFixed(2);
+
+const saldoEl = document.getElementById("saldoAtual");
+
+saldoEl.innerText = "R$ " + saldo.toFixed(2);
+
+/* cores estilo Nubank */
+if(saldo > -500){
+saldoEl.style.color = "#16a34a";
+}
+else if(saldo > -1500){
+saldoEl.style.color = "#f59e0b";
+}
+else{
+saldoEl.style.color = "#ef4444";
+}
+
+}
+
+/* atualizar sempre que algo mudar */
+const oldSalvar = salvarContas;
+
+salvarContas = function(){
+localStorage.setItem("contas", JSON.stringify(contas));
+renderFinanceiro();
+calcularResumoFinanceiro();
+atualizarSaldoNubank();
+}
+
+/* iniciar */
+atualizarSaldoNubank();  
   
 </script>
 
