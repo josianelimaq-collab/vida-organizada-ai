@@ -177,6 +177,53 @@ border-radius:10px;
 
 <div class="card">
 
+<h3>🥗 Nutricionista IA</h3>
+
+<label>Meta diária de calorias</label>
+<input id="metaCalorias" type="number" placeholder="Ex: 2000">
+
+<div>
+Consumido hoje:
+<b id="caloriasHoje">0 kcal</b>
+</div>
+
+<div>
+Status:
+<b id="statusCalorias">—</b>
+</div>
+
+<hr>
+
+<h4>💧 Água</h4>
+
+<label>Meta diária (ml)</label>
+<input id="metaAgua" type="number" placeholder="Ex: 2000">
+
+<div>
+Bebido hoje:
+<b id="aguaHoje">0 ml</b>
+</div>
+
+<button class="acao" onclick="beberAgua(200)">
++200 ml
+</button>
+
+<button class="acao" onclick="beberAgua(500)">
++500 ml
+</button>
+
+<div id="statusAgua"></div>
+
+<button class="acao" onclick="sugestaoCaloricaIA()">
+🤖 Sugerir pratos para bater meta
+</button>
+
+<div id="sugestaoIA" style="margin-top:10px;"></div>
+
+</div>
+  
+<div class="card">
+
 <h3>🔥 Nutrição Inteligente</h3>
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -1193,6 +1240,165 @@ alert("Cardápio inteligente criado ✨");
 
 /* recalcula sempre */
 setInterval(calcularCalorias,2000);
+
+/* ===========================
+   NUTRICIONISTA IA COMPLETO
+=========================== */
+
+let caloriasHoje = Number(localStorage.getItem("caloriasHoje")) || 0;
+let aguaHoje = Number(localStorage.getItem("aguaHoje")) || 0;
+
+/* ===== BASE DE CALORIAS ===== */
+
+const alimentosIA = {
+"arroz":130,
+"feijao":90,
+"frango":165,
+"ovo":70,
+"banana":90,
+"maça":80,
+"pão":140,
+"salada":40,
+"carne":250,
+"macarrao":220,
+"iogurte":120,
+"aveia":110,
+"leite":100,
+"queijo":120
+};
+
+/* ===== CONTAR CALORIAS AUTOMÁTICO ===== */
+
+function atualizarCaloriasHoje(){
+
+let total = 0;
+
+cardapio.forEach(dia=>{
+if(!dia) return;
+
+Object.values(dia).forEach(refeicao=>{
+if(!refeicao) return;
+
+refeicao.toLowerCase().split(",").forEach(item=>{
+
+item=item.trim();
+
+for(const alimento in alimentosIA){
+if(item.includes(alimento)){
+total += alimentosIA[alimento];
+}
+}
+
+});
+
+});
+
+});
+
+caloriasHoje = total;
+
+localStorage.setItem("caloriasHoje", caloriasHoje);
+
+document.getElementById("caloriasHoje").innerText =
+caloriasHoje + " kcal";
+
+analisarMetaCalorica();
+}
+
+/* ===== ANALISAR META ===== */
+
+function analisarMetaCalorica(){
+
+const meta = Number(document.getElementById("metaCalorias").value);
+const status = document.getElementById("statusCalorias");
+
+if(!meta) return;
+
+if(caloriasHoje < meta*0.7){
+status.innerText="⚠️ Abaixo da meta";
+}
+else if(caloriasHoje <= meta){
+status.innerText="✅ Dentro da meta";
+}
+else{
+status.innerText="🔥 Acima da meta";
+}
+
+}
+
+/* ===== ÁGUA ===== */
+
+function beberAgua(ml){
+
+aguaHoje += ml;
+
+localStorage.setItem("aguaHoje", aguaHoje);
+
+document.getElementById("aguaHoje").innerText =
+aguaHoje + " ml";
+
+analisarAgua();
+}
+
+function analisarAgua(){
+
+const meta = Number(document.getElementById("metaAgua").value);
+const status = document.getElementById("statusAgua");
+
+if(!meta) return;
+
+if(aguaHoje < meta*0.5){
+status.innerText="💧 Beba mais água";
+}
+else if(aguaHoje < meta){
+status.innerText="👍 Quase lá!";
+}
+else{
+status.innerText="✅ Meta de água atingida!";
+}
+
+}
+
+/* ===== IA SUGERE PRATOS ===== */
+
+function sugestaoCaloricaIA(){
+
+const meta = Number(document.getElementById("metaCalorias").value);
+if(!meta) return;
+
+const falta = meta - caloriasHoje;
+
+const sugestoes = [
+{nome:"Frango + arroz + salada", kcal:350},
+{nome:"Omelete + pão integral", kcal:280},
+{nome:"Iogurte + aveia + banana", kcal:300},
+{nome:"Carne + legumes", kcal:400},
+{nome:"Vitamina de banana + leite", kcal:250}
+];
+
+let ideias = sugestoes
+.filter(s => s.kcal <= falta + 200)
+.slice(0,3);
+
+const area = document.getElementById("sugestaoIA");
+
+area.innerHTML = "<b>Sugestões IA:</b><br>";
+
+ideias.forEach(i=>{
+area.innerHTML += `🍽 ${i.nome} (~${i.kcal} kcal)<br>`;
+});
+
+}
+
+/* ===== ATUALIZA AUTOMÁTICO ===== */
+
+setInterval(atualizarCaloriasHoje,3000);
+
+/* iniciar valores */
+document.addEventListener("DOMContentLoaded",()=>{
+document.getElementById("aguaHoje").innerText = aguaHoje+" ml";
+atualizarCaloriasHoje();
+});
   
 </script>
 
