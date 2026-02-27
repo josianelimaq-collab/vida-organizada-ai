@@ -287,6 +287,13 @@ Bebido hoje:
 <div id="cardapioLista"></div>
 
 <button class="acao" onclick="salvarCardapio()">Salvar Cardápio</button>
+
+<button class="acao" onclick="sugerirRefeicoesIA()">
+✨ Sugerir refeições inteligentes
+</button>
+
+<div id="sugestoesRefeicoes" style="margin-top:15px;"></div>
+  
 </div>
 </div>
 
@@ -1721,6 +1728,98 @@ function salvarMetaAgua(){
 const meta = document.getElementById("metaAgua").value;
 localStorage.setItem("metaAgua", meta);
 }  
+
+/* ===== NUTRICIONISTA IA — SUGESTÕES INTELIGENTES ===== */
+
+function sugerirRefeicoesIA(){
+
+const meta = Number(localStorage.getItem("metaCalorias")) || 1800;
+
+/* BASE EMAGRECIMENTO (equilibrado) */
+const refeicoes = {
+
+cafe:[
+"🥣 Iogurte natural + aveia + banana",
+"🍳 Omelete + café sem açúcar",
+"🍞 Pão integral + ovo mexido",
+"🍓 Vitamina de frutas com chia"
+],
+
+almoco:[
+"🍗 Frango grelhado + arroz + salada",
+"🐟 Peixe assado + legumes",
+"🥗 Salada completa com proteína",
+"🍲 Carne magra + purê de abóbora"
+],
+
+lanche:[
+"🍎 Fruta + castanhas",
+"🥜 Iogurte + amendoim",
+"🧀 Queijo branco + fruta",
+"🥤 Shake proteico caseiro"
+],
+
+jantar:[
+"🥗 Salada + ovo cozido",
+"🍗 Frango desfiado + legumes",
+"🍲 Sopa leve de legumes",
+"🐟 Peixe grelhado + salada"
+]
+};
+
+/* AJUSTE INTELIGENTE POR META */
+let foco = "equilibrado";
+
+if(meta <= 1500) foco = "emagrecimento";
+if(meta >= 2200) foco = "energia";
+
+/* SORTEIO IA */
+function escolher(lista){
+return lista[Math.floor(Math.random()*lista.length)];
+}
+
+/* GERAR MENU */
+const sugestao = {
+cafe: escolher(refeicoes.cafe),
+almoco: escolher(refeicoes.almoco),
+lanche: escolher(refeicoes.lanche),
+jantar: escolher(refeicoes.jantar)
+};
+
+/* RENDER */
+document.getElementById("sugestoesRefeicoes").innerHTML = `
+<div class="card">
+<h3>🤖 Sugestão Inteligente (${foco})</h3>
+
+<p><b>🌅 Café:</b> ${sugestao.cafe}</p>
+<p><b>🍛 Almoço:</b> ${sugestao.almoco}</p>
+<p><b>🍎 Lanche:</b> ${sugestao.lanche}</p>
+<p><b>🌙 Jantar:</b> ${sugestao.jantar}</p>
+
+<button class="acao" onclick="aplicarSugestaoCardapio()">
+Aplicar no cardápio
+</button>
+</div>
+`;
+
+window.sugestaoAtual = sugestao;
+}
+
+function aplicarSugestaoCardapio(){
+
+if(!window.sugestaoAtual) return;
+
+cardapio[0] = {
+cafe: sugestaoAtual.cafe,
+almoco: sugestaoAtual.almoco,
+jantar: sugestaoAtual.jantar
+};
+
+renderCardapio();
+salvar("cardapio",cardapio);
+
+alert("Cardápio aplicado ✅");
+}
   
 </script>
 
