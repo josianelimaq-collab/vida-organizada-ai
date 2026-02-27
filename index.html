@@ -410,6 +410,63 @@ document.getElementById("mensagemAI").innerText = msg;
 }
 
 gerarMensagemAI();
+/* -------- COPILOTO INTELIGENTE -------- */
+
+function copilotoAI(){
+
+const hora = new Date().getHours();
+let mensagem = "";
+
+/* SAUDAÇÃO POR HORÁRIO */
+if(hora < 12){
+mensagem = "🌅 Bom dia! Comece por algo simples.";
+}
+else if(hora < 18){
+mensagem = "☀️ Boa tarde! Continue no seu ritmo.";
+}
+else{
+mensagem = "🌙 Boa noite! Hora de desacelerar.";
+}
+
+/* DETECTAR SOBRECARGA */
+if(tarefas.length >= 6){
+mensagem = "⚡ Muitas tarefas hoje. Escolha só 3 prioridades.";
+}
+
+/* DETECTAR SEMANA CHEIA */
+if(cardapio.length >= 6){
+mensagem = "🍽 Semana planejada! Preparar refeições antes pode ajudar.";
+}
+
+/* SUGERIR COMPRAS */
+let totalItens = 0;
+cardapio.forEach(d=>{
+if(!d) return;
+Object.values(d).forEach(r=>{
+if(r) totalItens++;
+});
+});
+
+if(totalItens >= 10){
+mensagem = "🛒 Seu cardápio está cheio. Talvez seja dia de compras.";
+}
+
+/* CONSULTAS */
+if(consultas.length > 0){
+mensagem = "📅 Você tem compromissos agendados. Confira as consultas.";
+}
+
+/* REMÉDIOS */
+if(remedios.length > 0){
+mensagem = "💊 Lembrete: mantenha seus horários de remédio.";
+}
+
+document.getElementById("mensagemAI").innerText = mensagem;
+}
+
+/* ATUALIZA AUTOMÁTICO */
+copilotoAI();
+setInterval(copilotoAI, 60000);
 </script>
 
 </body>
