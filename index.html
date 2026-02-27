@@ -186,6 +186,29 @@ border-radius:10px;
 
 <div class="card">
 <h3>💰 Controle Financeiro</h3>
+  
+<div class="card">
+<h3>📊 Painel Financeiro PRO</h3>
+
+<div style="
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:10px;
+">
+
+<div class="item">💸 Total do mês:<br><b id="totalMes">R$ 0</b></div>
+
+<div class="item">🏠 Contas fixas:<br><b id="totalFixas">R$ 0</b></div>
+
+<div class="item">🔄 Variáveis:<br><b id="totalVariaveis">R$ 0</b></div>
+
+<div class="item">📈 Previsão:<br><b id="previsaoSaldo">R$ 0</b></div>
+
+</div>
+
+<div id="alertasFinanceiros" style="margin-top:10px;"></div>
+</div>
 
 <input id="descricaoConta" placeholder="Descrição (ex: Luz, Mercado)">
 <input type="date" id="dataVencimento">
@@ -589,7 +612,8 @@ document.getElementById("finVencimento").value="";
 
 salvarContas();
 }
-
+calcularResumoFinanceiro();
+  
 function removerConta(i){
 contas.splice(i,1);
 salvarContas();
@@ -617,6 +641,55 @@ R$ ${c.valor} • ${c.tipo}<br>
 
 renderFinanceiro();
 
+function calcularResumoFinanceiro(){
+
+let totalMes = 0;
+let fixas = 0;
+let variaveis = 0;
+let hoje = new Date();
+let alertas = "";
+
+contas.forEach(c => {
+
+let valor = Number(c.valor) || 0;
+totalMes += valor;
+
+if(c.tipo === "Conta Fixa")
+fixas += valor;
+else
+variaveis += valor;
+
+if(c.vencimento){
+
+let dataConta = new Date(c.vencimento);
+let dias = (dataConta - hoje)/(1000*60*60*24);
+
+if(dias >= 0 && dias <= 3){
+alertas += `<div class="item" style="background:#ffe8e8">
+⚠️ ${c.descricao} vence em ${Math.ceil(dias)} dias
+</div>`;
+}
+
+}
+
+});
+
+document.getElementById("totalMes").innerText =
+"R$ " + totalMes.toFixed(2);
+
+document.getElementById("totalFixas").innerText =
+"R$ " + fixas.toFixed(2);
+
+document.getElementById("totalVariaveis").innerText =
+"R$ " + variaveis.toFixed(2);
+
+document.getElementById("previsaoSaldo").innerText =
+"R$ " + (-totalMes).toFixed(2);
+
+document.getElementById("alertasFinanceiros").innerHTML =
+alertas || "✅ Nenhum vencimento próximo";
+}
+  
 </script>
 
 </body>
