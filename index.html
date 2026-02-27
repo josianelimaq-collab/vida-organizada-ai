@@ -124,7 +124,11 @@ border-radius:10px;
 
 <header>🌸 Vida Organizada AI</header>
 
-<div class="card" id="assistenteAI" style="margin:15px;">
+<div id="assistenteAI" class="tela">
+  <div class="card" style="margin:15px;">
+  </div>
+</div>
+  
 <h3>🤖 Assistente Vida AI</h3>
 <div id="mensagemAI">Analisando sua rotina...</div>
 </div>
@@ -788,14 +792,6 @@ function responderAssistente(){
   }
 }
 /* -------- ASSISTENTE -------- */
-
-function abrirAssistente(){
-mostrarTela("assistente");
-}
-
-function abrirTela(id){
-document.querySelectorAll('.tela')
-.forEach(t=>t.classList.remove('ativa'));
 
 document.getElementById(id)
 .classList.add('ativa');
