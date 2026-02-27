@@ -7,85 +7,116 @@
 <title>Vida Organizada AI</title>
 
 <style>
+
 body{
+font-family: system-ui, -apple-system;
+background: linear-gradient(180deg,#6c8cff,#f3f6fb);
 margin:0;
-font-family:system-ui;
-background:linear-gradient(180deg,#6c8cff,#f3f6fb);
 color:#333;
 }
 
 header{
-text-align:center;
-padding:20px;
+position:sticky;
+top:0;
+background:#6c8cff;
 color:white;
-font-size:22px;
+text-align:center;
+padding:18px;
+font-size:20px;
 font-weight:bold;
+box-shadow:0 2px 8px rgba(0,0,0,0.15);
+z-index:10;
 }
 
 .tela{
 display:none;
-padding:20px;
+padding:18px;
 padding-bottom:90px;
+animation:fade .25s ease;
 }
 
 .tela.ativa{
 display:block;
 }
 
+@keyframes fade{
+from{opacity:0; transform:translateY(8px);}
+to{opacity:1; transform:translateY(0);}
+}
+
 .card{
 background:white;
-padding:16px;
-margin-bottom:15px;
-border-radius:18px;
-box-shadow:0 4px 12px rgba(0,0,0,0.08);
+padding:18px;
+margin-bottom:16px;
+border-radius:20px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
 }
 
 input{
 width:100%;
-padding:10px;
-margin:6px 0 12px;
+padding:12px;
+margin-top:6px;
+margin-bottom:12px;
 border-radius:10px;
-border:1px solid #ccc;
+border:1px solid #ddd;
+font-size:15px;
 }
 
 button{
-border:none;
-padding:12px;
-border-radius:12px;
-background:#6c8cff;
-color:white;
-width:100%;
-font-size:15px;
 cursor:pointer;
 }
 
-.lista{
-margin-top:10px;
+button.acao{
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+background:#6c8cff;
+color:white;
+font-size:16px;
+font-weight:600;
+transition:.2s;
 }
 
-.item{
-display:flex;
-justify-content:space-between;
-margin-bottom:8px;
+button.acao:active{
+transform:scale(.97);
 }
 
-.menu{
+.menuApp{
 position:fixed;
 bottom:0;
+left:0;
 width:100%;
 background:white;
+border-top:1px solid #eee;
 display:flex;
 justify-content:space-around;
-padding:10px;
-border-top:1px solid #ddd;
+padding:10px 0;
+box-shadow:0 -4px 12px rgba(0,0,0,0.08);
 }
 
-.menu button{
+.menuApp button{
 background:none;
-color:#333;
+border:none;
 font-size:22px;
-width:auto;
+opacity:.5;
+transition:.2s;
 }
+
+.menuApp button:hover{
+opacity:1;
+transform:scale(1.1);
+}
+
+.lista-item{
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+background:#f7f8ff;
+padding:10px;
+border-radius:10px;
+}
+
 </style>
 </head>
 
