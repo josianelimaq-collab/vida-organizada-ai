@@ -9,112 +9,81 @@
 <style>
 
 body{
-font-family: system-ui, -apple-system;
-background: linear-gradient(180deg,#6c8cff,#f3f6fb);
+font-family: system-ui;
 margin:0;
+background:linear-gradient(180deg,#6c8cff,#f3f6fb);
 color:#333;
 }
 
 header{
-position:sticky;
-top:0;
 background:#6c8cff;
 color:white;
 text-align:center;
 padding:18px;
 font-size:20px;
 font-weight:bold;
-box-shadow:0 2px 8px rgba(0,0,0,0.15);
-z-index:10;
+}
+
+.menu{
+position:fixed;
+bottom:0;
+width:100%;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px;
+box-shadow:0 -2px 10px rgba(0,0,0,.15);
+}
+
+.menu button{
+background:none;
+border:none;
+font-size:16px;
 }
 
 .tela{
 display:none;
-padding:18px;
+padding:20px;
 padding-bottom:90px;
-animation:fade .25s ease;
 }
 
 .tela.ativa{
 display:block;
 }
 
-@keyframes fade{
-from{opacity:0; transform:translateY(8px);}
-to{opacity:1; transform:translateY(0);}
-}
-
 .card{
 background:white;
-padding:18px;
-margin-bottom:16px;
-border-radius:20px;
-box-shadow:0 6px 18px rgba(0,0,0,0.08);
+padding:15px;
+border-radius:14px;
+margin-bottom:15px;
+box-shadow:0 3px 8px rgba(0,0,0,.1);
 }
 
-input{
+input,select{
 width:100%;
-padding:12px;
-margin-top:6px;
-margin-bottom:12px;
-border-radius:10px;
-border:1px solid #ddd;
-font-size:15px;
-}
-
-button{
-cursor:pointer;
+padding:10px;
+margin:5px 0;
+border-radius:8px;
+border:1px solid #ccc;
 }
 
 button.acao{
-width:100%;
-padding:14px;
-border:none;
-border-radius:12px;
 background:#6c8cff;
 color:white;
-font-size:16px;
-font-weight:600;
-transition:.2s;
-}
-
-button.acao:active{
-transform:scale(.97);
-}
-
-.menuApp{
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-background:white;
-border-top:1px solid #eee;
-display:flex;
-justify-content:space-around;
-padding:10px 0;
-box-shadow:0 -4px 12px rgba(0,0,0,0.08);
-}
-
-.menuApp button{
-background:none;
 border:none;
-font-size:22px;
-opacity:.5;
-transition:.2s;
-}
-
-.menuApp button:hover{
-opacity:1;
-transform:scale(1.1);
-}
-
-.lista-item{
-display:flex;
-justify-content:space-between;
-margin-bottom:10px;
-background:#f7f8ff;
 padding:10px;
 border-radius:10px;
+width:100%;
+margin-top:8px;
+}
+
+.item{
+background:#f3f6fb;
+padding:10px;
+border-radius:10px;
+margin-top:8px;
+display:flex;
+justify-content:space-between;
 }
 
 </style>
@@ -124,491 +93,156 @@ border-radius:10px;
 
 <header>🌸 Vida Organizada AI</header>
 
-<div class="card" id="assistenteAI" style="margin:15px;">
-<h3>🤖 Assistente Vida AI</h3>
-<div id="mensagemAI">Analisando sua rotina...</div>
-</div>
 <!-- TAREFAS -->
 <div id="tarefas" class="tela ativa">
 <div class="card">
-<h3>Tarefas de Casa</h3>
-<input id="novaTarefa" placeholder="Adicionar tarefa...">
-<button onclick="addTarefa()">Adicionar</button>
-<div id="listaTarefas" class="lista"></div>
-</div>
-</div>
-
-<!-- CONSULTAS -->
-<div id="consultas" class="tela">
-<div class="card">
-<h3>Consultas</h3>
-<input id="nomeConsulta" placeholder="Nome">
-<input type="date" id="dataConsulta">
-<button onclick="addConsulta()">Salvar</button>
-<div id="listaConsultas" class="lista"></div>
-</div>
-</div>
-
-<!-- ROTINA -->
-<div id="rotina" class="tela">
-<div class="card">
-<h3>Rotina Diária</h3>
-<input id="rotinaTexto" placeholder="Nova rotina">
-<button onclick="addRotina()">Adicionar</button>
-<div id="listaRotina" class="lista"></div>
-</div>
-</div>
-
-<!-- REMÉDIOS -->
-<div id="remedios" class="tela">
-<div class="card">
-<h3>Lembrete de Remédios</h3>
-<input id="nomeRemedio" placeholder="Remédio">
-<input type="time" id="horaRemedio">
-<button onclick="addRemedio()">Adicionar</button>
-<div id="listaRemedios" class="lista"></div>
-</div>
-</div>
-
-<!-- CARDÁPIO -->
-<div id="cardapio" class="tela">
-<div class="card">
-<h3>🍽 Cardápio da Semana</h3>
-
-<div id="cardapioLista"></div>
-
-<button class="acao" onclick="salvarCardapio()">Salvar Cardápio</button>
+<h3>Tarefas</h3>
+<input id="novaTarefa" placeholder="Nova tarefa">
+<button class="acao" onclick="addTarefa()">Adicionar</button>
+<div id="listaTarefas"></div>
 </div>
 </div>
 
 <!-- FINANCEIRO -->
 <div id="financeiro" class="tela">
-
 <div class="card">
-<h3>💰 Controle Financeiro</h3>
 
-<input id="descricaoConta" placeholder="Descrição (ex: Luz, Mercado)">
-<input type="date" id="dataVencimento">
-<input id="valorConta" placeholder="Valor (R$)">
+<h3>💰 Financeiro Inteligente</h3>
 
-<select id="tipoConta">
-<option value="fixa">Conta Fixa</option>
-<option value="variavel">Conta Variável</option>
-<option value="cartao">Parcelamento Cartão</option>
-<option value="meta">Meta / Poupança</option>
+<input id="descricao" placeholder="Descrição">
+
+<input type="number" id="valor" placeholder="Valor R$">
+
+<input type="date" id="vencimento">
+
+<select id="tipo">
+<option>Conta Fixa</option>
+<option>Conta Variável</option>
+<option>Parcelamento Cartão</option>
+<option>Meta / Poupança</option>
 </select>
 
-<button class="acao" onclick="addConta()">Adicionar</button>
+<button class="acao" onclick="addConta()">Salvar</button>
 
+</div>
+
+<div class="card">
+<h3>📋 Suas contas</h3>
 <div id="listaFinanceiro"></div>
-
-</div>
-</div>
-
-<!-- ASSISTENTE -->
-<div id="assistente" class="tela">
-
-<div class="card">
-<h3>🤖 Assistente Vida AI</h3>
-
-<p id="mensagemAssistente">
-Olá 🌸 Estou aqui para te ajudar a organizar seu dia.
-</p>
-
-<input id="pergunta" placeholder="Digite algo..." />
-
-<button class="acao" onclick="responderAssistente()">
-Enviar
-</button>
-
 </div>
 
 </div>
-  
-<!-- COMPRAS -->
-<div id="compras" class="tela">
-<div class="card">
-<h3>🛒 Lista de Compras</h3>
-<div id="listaCompras"></div>
-<button class="acao" onclick="gerarCompras()">Atualizar Lista</button>
-</div>
-</div>
-  
+
 <!-- MENU -->
-<div class="menuApp">
-<button onclick="trocar('tarefas')">🏠</button>
-<button onclick="trocar('consultas')">📅</button>
-<button onclick="trocar('rotina')">🧠</button>
-<button onclick="trocar('assistente')">🤖</button>
-<button onclick="trocar('cardapio')">🍽</button>
-<button onclick="trocar('compras')">🛒</button>
-<button onclick="trocar('financeiro')">💰</button>
-<button onclick="trocar('remedios')">💊</button>
+<div class="menu">
+<button onclick="trocarTela('tarefas')">🏠</button>
+<button onclick="trocarTela('financeiro')">💰</button>
 </div>
 
 <script>
 
-/* -------- TROCAR TELA -------- */
-function trocar(id){
-document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
-document.getElementById(id).classList.add('ativa');
-}
+/* -------- TROCAR TELAS -------- */
 
-/* -------- STORAGE -------- */
-function salvar(chave,valor){
-localStorage.setItem(chave,JSON.stringify(valor));
-}
+function trocarTela(id){
+document.querySelectorAll(".tela")
+.forEach(t=>t.classList.remove("ativa"));
 
-function carregar(chave){
-return JSON.parse(localStorage.getItem(chave))||[];
+document.getElementById(id)
+.classList.add("ativa");
 }
 
 /* -------- TAREFAS -------- */
-let tarefas=carregar("tarefas");
 
-function renderTarefas(){
-const lista=document.getElementById("listaTarefas");
-lista.innerHTML="";
-tarefas.forEach((t,i)=>{
-lista.innerHTML+=`<div class="item">${t}
-<button onclick="removerTarefa(${i})">❌</button></div>`;
-});
+let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
+
+function salvarTarefas(){
+localStorage.setItem("tarefas",JSON.stringify(tarefas));
+renderTarefas();
 }
 
 function addTarefa(){
-const input=document.getElementById("novaTarefa");
-if(!input.value.trim())return;
-tarefas.push(input.value);
-salvar("tarefas",tarefas);
-input.value="";
-renderTarefas();
+let texto=document.getElementById("novaTarefa").value;
+if(!texto) return;
+
+tarefas.push(texto);
+document.getElementById("novaTarefa").value="";
+salvarTarefas();
 }
 
 function removerTarefa(i){
 tarefas.splice(i,1);
-salvar("tarefas",tarefas);
+salvarTarefas();
+}
+
+function renderTarefas(){
+let lista=document.getElementById("listaTarefas");
+lista.innerHTML="";
+
+tarefas.forEach((t,i)=>{
+lista.innerHTML+=`
+<div class="item">
+${t}
+<button onclick="removerTarefa(${i})">❌</button>
+</div>`;
+});
+}
+
 renderTarefas();
-}
-
-/* -------- CONSULTAS -------- */
-let consultas=carregar("consultas");
-
-function renderConsultas(){
-const lista=document.getElementById("listaConsultas");
-lista.innerHTML="";
-consultas.forEach(c=>{
-lista.innerHTML+=`<div>${c.nome} - ${c.data}</div>`;
-});
-}
-
-function addConsulta(){
-const nome=document.getElementById("nomeConsulta").value;
-const data=document.getElementById("dataConsulta").value;
-if(!nome||!data)return;
-consultas.push({nome,data});
-salvar("consultas",consultas);
-renderConsultas();
-}
-
-/* -------- ROTINA -------- */
-let rotinas=carregar("rotinas");
-
-function renderRotina(){
-const lista=document.getElementById("listaRotina");
-lista.innerHTML="";
-rotinas.forEach(r=>{
-lista.innerHTML+=`<div>${r}</div>`;
-});
-}
-
-function addRotina(){
-const txt=document.getElementById("rotinaTexto");
-if(!txt.value.trim())return;
-rotinas.push(txt.value);
-salvar("rotinas",rotinas);
-txt.value="";
-renderRotina();
-}
-
-/* -------- REMÉDIOS -------- */
-let remedios=carregar("remedios");
-
-function renderRemedios(){
-const lista=document.getElementById("listaRemedios");
-lista.innerHTML="";
-remedios.forEach(r=>{
-lista.innerHTML+=`<div>${r.nome} às ${r.hora}</div>`;
-});
-}
-
-function addRemedio(){
-const nome=document.getElementById("nomeRemedio").value;
-const hora=document.getElementById("horaRemedio").value;
-if(!nome||!hora)return;
-remedios.push({nome,hora});
-salvar("remedios",remedios);
-renderRemedios();
-}
-
-/* -------- INIT -------- */
-renderTarefas();
-renderConsultas();
-renderRotina();
-renderRemedios();
-
-/* -------- CARDÁPIO -------- */
-
-const dias = [
-"Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"
-];
-
-let cardapio = carregar("cardapio");
-
-function renderCardapio(){
-const area=document.getElementById("cardapioLista");
-area.innerHTML="";
-
-dias.forEach((dia,i)=>{
-const dados = cardapio[i] || {cafe:"",almoco:"",jantar:""};
-
-area.innerHTML+=`
-<div class="card">
-<strong>${dia}</strong>
-
-<input placeholder="Café da manhã"
-value="${dados.cafe}"
-oninput="updateCardapio(${i},'cafe',this.value)">
-
-<input placeholder="Almoço"
-value="${dados.almoco}"
-oninput="updateCardapio(${i},'almoco',this.value)">
-
-<input placeholder="Jantar"
-value="${dados.jantar}"
-oninput="updateCardapio(${i},'jantar',this.value)">
-</div>
-`;
-});
-}
-
-function updateCardapio(i,tipo,valor){
-if(!cardapio[i]) cardapio[i]={};
-cardapio[i][tipo]=valor;
-}
-
-function salvarCardapio(){
-salvar("cardapio",cardapio);
-alert("Cardápio salvo ✅");
-}
-
-renderCardapio();
-
-/* -------- LISTA DE COMPRAS -------- */
-
-function gerarCompras(){
-
-const lista = document.getElementById("listaCompras");
-lista.innerHTML = "";
-
-let itens = [];
-
-cardapio.forEach(dia=>{
-if(!dia) return;
-
-Object.values(dia).forEach(refeicao=>{
-if(refeicao){
-refeicao.split(",").forEach(item=>{
-itens.push(item.trim());
-});
-}
-});
-});
-
-const unicos = [...new Set(itens)];
-
-unicos.forEach(item=>{
-lista.innerHTML += `
-<div class="lista-item">
-🛒 ${item}
-</div>
-`;
-});
-
-}
-
-/* -------- ASSISTENTE INTELIGENTE -------- */
-
-function gerarMensagemAI(){
-
-let msg="🌸 Tudo sob controle hoje.";
-
-if(tarefas.length > 5){
-msg="⚡ Muitas tarefas hoje. Priorize só o essencial.";
-}
-
-if(cardapio.length >=5){
-msg="🍽 Semana bem planejada! Talvez preparar refeições adiantadas ajude.";
-}
-
-if(consultas.length > 0){
-msg="📅 Você tem compromissos agendados. Confira as consultas.";
-}
-
-if(remedios.length > 0){
-msg="💊 Não esqueça seus horários de remédio hoje.";
-}
-
-document.getElementById("mensagemAI").innerText = msg;
-}
-
-gerarMensagemAI();
-/* -------- COPILOTO INTELIGENTE -------- */
-
-function copilotoAI(){
-
-const hora = new Date().getHours();
-let mensagem = "";
-
-/* SAUDAÇÃO POR HORÁRIO */
-if(hora < 12){
-mensagem = "🌅 Bom dia! Comece por algo simples.";
-}
-else if(hora < 18){
-mensagem = "☀️ Boa tarde! Continue no seu ritmo.";
-}
-else{
-mensagem = "🌙 Boa noite! Hora de desacelerar.";
-}
-
-/* DETECTAR SOBRECARGA */
-if(tarefas.length >= 6){
-mensagem = "⚡ Muitas tarefas hoje. Escolha só 3 prioridades.";
-}
-
-/* DETECTAR SEMANA CHEIA */
-if(cardapio.length >= 6){
-mensagem = "🍽 Semana planejada! Preparar refeições antes pode ajudar.";
-}
-
-/* SUGERIR COMPRAS */
-let totalItens = 0;
-cardapio.forEach(d=>{
-if(!d) return;
-Object.values(d).forEach(r=>{
-if(r) totalItens++;
-});
-});
-
-if(totalItens >= 10){
-mensagem = "🛒 Seu cardápio está cheio. Talvez seja dia de compras.";
-}
-
-/* CONSULTAS */
-if(consultas.length > 0){
-mensagem = "📅 Você tem compromissos agendados. Confira as consultas.";
-}
-
-/* REMÉDIOS */
-if(remedios.length > 0){
-mensagem = "💊 Lembrete: mantenha seus horários de remédio.";
-}
-
-document.getElementById("mensagemAI").innerText = mensagem;
-}
-
-/* ATUALIZA AUTOMÁTICO */
-copilotoAI();
-setInterval(copilotoAI, 60000);
-
-/* -------- ASSISTENTE -------- */
-
-function responderAssistente(){
-  const pergunta = document
-    .getElementById("pergunta")
-    .value.toLowerCase();
-
-  const resposta =
-    document.getElementById("mensagemAssistente");
-
-  if(pergunta.includes("cansada")){
-    resposta.innerText =
-      "🌙 Que tal diminuir o ritmo hoje e focar só no essencial?";
-  }
-  else if(pergunta.includes("cardapio")){
-    resposta.innerText =
-      "🍽️ Posso te ajudar a montar o cardápio da semana!";
-  }
-  else if(pergunta.includes("tarefas")){
-    resposta.innerText =
-      "✅ Vamos escolher apenas 3 tarefas principais hoje.";
-  }
-  else{
-    resposta.innerText =
-      "🤖 Estou aprendendo! Fale sobre rotina, tarefas ou cardápio.";
-  }
-}
-/* -------- ASSISTENTE -------- */
-
-function abrirAssistente(){
-mostrarTela("assistente");
-}
-
-function abrirTela(id){
-document.querySelectorAll('.tela')
-.forEach(t=>t.classList.remove('ativa'));
-
-document.getElementById(id)
-.classList.add('ativa');
-}
 
 /* -------- FINANCEIRO -------- */
 
-let contas = carregar("financeiro");
+let contas = JSON.parse(localStorage.getItem("contas")) || [];
+
+function salvarContas(){
+localStorage.setItem("contas",JSON.stringify(contas));
+renderFinanceiro();
+}
+
+function addConta(){
+
+let conta={
+descricao:descricao.value,
+valor:valor.value,
+vencimento:vencimento.value,
+tipo:tipo.value
+};
+
+if(!conta.descricao) return;
+
+contas.push(conta);
+
+descricao.value="";
+valor.value="";
+vencimento.value="";
+
+salvarContas();
+}
+
+function removerConta(i){
+contas.splice(i,1);
+salvarContas();
+}
 
 function renderFinanceiro(){
-const lista=document.getElementById("listaFinanceiro");
-if(!lista) return;
 
+let lista=document.getElementById("listaFinanceiro");
 lista.innerHTML="";
 
 contas.forEach((c,i)=>{
 lista.innerHTML+=`
-<div class="lista-item">
+<div class="item">
 <div>
-<strong>${c.descricao}</strong><br>
-📅 ${c.data} | 💲 R$ ${c.valor} | ${c.tipo}
+<b>${c.descricao}</b><br>
+R$ ${c.valor} • ${c.tipo}<br>
+📅 ${c.vencimento}
 </div>
 <button onclick="removerConta(${i})">❌</button>
 </div>`;
 });
 }
 
-function addConta(){
-
-const descricao=document.getElementById("descricaoConta").value;
-const data=document.getElementById("dataVencimento").value;
-const valor=document.getElementById("valorConta").value;
-const tipo=document.getElementById("tipoConta").value;
-
-if(!descricao || !data || !valor) return;
-
-contas.push({descricao,data,valor,tipo});
-salvar("financeiro",contas);
-
 renderFinanceiro();
 
-document.getElementById("descricaoConta").value="";
-document.getElementById("dataVencimento").value="";
-document.getElementById("valorConta").value="";
-}
-
-function removerConta(i){
-contas.splice(i,1);
-salvar("financeiro",contas);
-renderFinanceiro();
-}
-
-renderFinanceiro();
 </script>
 
 </body>
