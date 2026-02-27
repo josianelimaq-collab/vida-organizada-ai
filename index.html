@@ -4,117 +4,78 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Vida Organizada AI</title>
+<title>Vida Organizada Premium</title>
 
 <style>
 
 body{
-font-family: system-ui, -apple-system;
-background: linear-gradient(180deg,#6c8cff,#f3f6fb);
+font-family:system-ui;
 margin:0;
+background:linear-gradient(180deg,#6c8cff,#f3f6fb);
 color:#333;
 }
 
 header{
-position:sticky;
-top:0;
 background:#6c8cff;
 color:white;
 text-align:center;
 padding:18px;
 font-size:20px;
 font-weight:bold;
-box-shadow:0 2px 8px rgba(0,0,0,0.15);
-z-index:10;
 }
 
-.tela{
-display:none;
-padding:18px;
-padding-bottom:90px;
-animation:fade .25s ease;
-}
-
-.tela.ativa{
-display:block;
-}
-
-@keyframes fade{
-from{opacity:0; transform:translateY(8px);}
-to{opacity:1; transform:translateY(0);}
-}
+.tela{display:none;padding:18px;padding-bottom:90px;}
+.ativa{display:block;}
 
 .card{
 background:white;
-padding:18px;
-margin-bottom:16px;
-border-radius:20px;
-box-shadow:0 6px 18px rgba(0,0,0,0.08);
+padding:16px;
+margin-bottom:14px;
+border-radius:16px;
+box-shadow:0 4px 12px rgba(0,0,0,.1);
 }
 
 input{
 width:100%;
-padding:12px;
-margin-top:6px;
-margin-bottom:12px;
-border-radius:10px;
-border:1px solid #ddd;
-font-size:15px;
+padding:10px;
+margin-top:8px;
+border-radius:8px;
+border:1px solid #ccc;
 }
 
 button{
-cursor:pointer;
-}
-
-button.acao{
+margin-top:8px;
+padding:10px;
 width:100%;
-padding:14px;
 border:none;
-border-radius:12px;
+border-radius:10px;
 background:#6c8cff;
 color:white;
-font-size:16px;
-font-weight:600;
-transition:.2s;
+font-size:15px;
 }
 
-button.acao:active{
-transform:scale(.97);
-}
-
-.menuApp{
+.menu{
 position:fixed;
 bottom:0;
-left:0;
 width:100%;
 background:white;
-border-top:1px solid #eee;
 display:flex;
 justify-content:space-around;
-padding:10px 0;
-box-shadow:0 -4px 12px rgba(0,0,0,0.08);
-}
-
-.menuApp button{
-background:none;
-border:none;
-font-size:22px;
-opacity:.5;
-transition:.2s;
-}
-
-.menuApp button:hover{
-opacity:1;
-transform:scale(1.1);
-}
-
-.lista-item{
-display:flex;
-justify-content:space-between;
-margin-bottom:10px;
-background:#f7f8ff;
 padding:10px;
+border-top:1px solid #ddd;
+}
+
+.barra{
+height:10px;
+background:#eee;
 border-radius:10px;
+margin-top:6px;
+overflow:hidden;
+}
+
+.progresso{
+height:100%;
+background:#6c8cff;
 }
 
 </style>
@@ -122,574 +83,216 @@ border-radius:10px;
 
 <body>
 
-<header>🌸 Vida Organizada AI</header>
+<header>🌸 Vida Organizada Premium</header>
 
-<div class="card" id="assistenteAI" style="margin:15px;">
-<h3>🤖 Assistente Vida AI</h3>
-<div id="mensagemAI">Analisando sua rotina...</div>
-</div>
-<!-- TAREFAS -->
+<!-- ================= TAREFAS ================= -->
 <div id="tarefas" class="tela ativa">
 <div class="card">
-<h3>Tarefas de Casa</h3>
-<input id="novaTarefa" placeholder="Adicionar tarefa...">
+<h3>Tarefas</h3>
+<input id="novaTarefa" placeholder="Adicionar tarefa">
 <button onclick="addTarefa()">Adicionar</button>
-<div id="listaTarefas" class="lista"></div>
+<div id="listaTarefas"></div>
 </div>
 </div>
 
-<!-- CONSULTAS -->
+<!-- ================= CONSULTAS ================= -->
 <div id="consultas" class="tela">
 <div class="card">
 <h3>Consultas</h3>
-<input id="nomeConsulta" placeholder="Nome">
+<input id="nomeConsulta" placeholder="Consulta">
 <input type="date" id="dataConsulta">
 <button onclick="addConsulta()">Salvar</button>
-<div id="listaConsultas" class="lista"></div>
+<div id="listaConsultas"></div>
 </div>
 </div>
 
-<!-- ROTINA -->
+<!-- ================= ROTINA ================= -->
 <div id="rotina" class="tela">
 <div class="card">
 <h3>Rotina Diária</h3>
-<input id="rotinaTexto" placeholder="Nova rotina">
+<input id="novaRotina" placeholder="Nova rotina">
 <button onclick="addRotina()">Adicionar</button>
-<div id="listaRotina" class="lista"></div>
+<div id="listaRotina"></div>
 </div>
 </div>
 
-<!-- REMÉDIOS -->
+<!-- ================= REMÉDIOS ================= -->
 <div id="remedios" class="tela">
 <div class="card">
-<h3>Lembrete de Remédios</h3>
+<h3>Lembretes de Remédio</h3>
 <input id="nomeRemedio" placeholder="Remédio">
 <input type="time" id="horaRemedio">
 <button onclick="addRemedio()">Adicionar</button>
-<div id="listaRemedios" class="lista"></div>
+<div id="listaRemedios"></div>
 </div>
 </div>
 
-<!-- CARDÁPIO -->
-<div id="cardapio" class="tela">
-<div class="card">
-<h3>🍽 Cardápio da Semana</h3>
-
-<div id="cardapioLista"></div>
-
-<button class="acao" onclick="salvarCardapio()">Salvar Cardápio</button>
-</div>
-</div>
-
-<!-- FINANCEIRO -->
+<!-- ================= FINANCEIRO PRO ================= -->
 <div id="financeiro" class="tela">
 
 <div class="card">
-<h3>💰 Controle Financeiro</h3>
-  
-<div class="card">
-<h3>📊 Painel Financeiro PRO</h3>
+<h3>💰 Financeiro Inteligente PRO</h3>
 
-<div style="
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-top:10px;
-">
+<input id="nomeCartao" placeholder="Nome do cartão">
+<input id="limiteTotal" type="number" placeholder="Limite total">
+<input id="limiteUsado" type="number" placeholder="Total utilizado">
 
-<div class="item">💸 Total do mês:<br><b id="totalMes">R$ 0</b></div>
+<button onclick="addCartao()">Salvar Cartão</button>
 
-<div class="item">🏠 Contas fixas:<br><b id="totalFixas">R$ 0</b></div>
-
-<div class="item">🔄 Variáveis:<br><b id="totalVariaveis">R$ 0</b></div>
-
-<div class="item">📈 Previsão:<br><b id="previsaoSaldo">R$ 0</b></div>
-
-</div>
-
-<div id="alertasFinanceiros" style="margin-top:10px;"></div>
-</div>
-
-<input id="descricaoConta" placeholder="Descrição (ex: Luz, Mercado)">
-<input type="date" id="dataVencimento">
-<input id="valorConta" placeholder="Valor (R$)">
-
-<select id="tipoConta">
-<option value="fixa">Conta Fixa</option>
-<option value="variavel">Conta Variável</option>
-<option value="cartao">Parcelamento Cartão</option>
-<option value="meta">Meta / Poupança</option>
-</select>
-
-<button class="acao" onclick="addConta()">Adicionar</button>
-
-<div id="listaFinanceiro"></div>
-
-</div>
-</div>
-
-<!-- ASSISTENTE -->
-<div id="assistente" class="tela">
-
-<div class="card">
-<h3>🤖 Assistente Vida AI</h3>
-
-<p id="mensagemAssistente">
-Olá 🌸 Estou aqui para te ajudar a organizar seu dia.
-</p>
-
-<input id="pergunta" placeholder="Digite algo..." />
-
-<button class="acao" onclick="responderAssistente()">
-Enviar
-</button>
+<div id="listaCartoes"></div>
 
 </div>
 
 </div>
-  
-<!-- COMPRAS -->
-<div id="compras" class="tela">
-<div class="card">
-<h3>🛒 Lista de Compras</h3>
-<div id="listaCompras"></div>
-<button class="acao" onclick="gerarCompras()">Atualizar Lista</button>
-</div>
-</div>
-  
+
 <!-- MENU -->
-<div class="menuApp">
-<button onclick="trocar('tarefas')">🏠</button>
-<button onclick="trocar('consultas')">📅</button>
-<button onclick="trocar('rotina')">🧠</button>
-<button onclick="trocar('assistente')">🤖</button>
-<button onclick="trocar('cardapio')">🍽</button>
-<button onclick="trocar('compras')">🛒</button>
-<button onclick="trocar('financeiro')">💰</button>
-<button onclick="trocar('remedios')">💊</button>
+<div class="menu">
+<button onclick="abrirTela('tarefas')">🏠</button>
+<button onclick="abrirTela('consultas')">📅</button>
+<button onclick="abrirTela('rotina')">🧠</button>
+<button onclick="abrirTela('remedios')">💊</button>
+<button onclick="abrirTela('financeiro')">💳</button>
 </div>
 
 <script>
 
-/* -------- TROCAR TELA -------- */
-function trocar(id){
-document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
-document.getElementById(id).classList.add('ativa');
+/* ---------- TROCAR TELAS ---------- */
+function abrirTela(id){
+document.querySelectorAll(".tela")
+.forEach(t=>t.classList.remove("ativa"));
+
+document.getElementById(id).classList.add("ativa");
 }
 
-/* -------- STORAGE -------- */
+/* ---------- STORAGE ---------- */
 function salvar(chave,valor){
 localStorage.setItem(chave,JSON.stringify(valor));
 }
 
 function carregar(chave){
-return JSON.parse(localStorage.getItem(chave))||[];
+return JSON.parse(localStorage.getItem(chave)||"[]");
 }
 
-/* -------- TAREFAS -------- */
+/* ---------- TAREFAS ---------- */
 let tarefas=carregar("tarefas");
 
 function renderTarefas(){
-const lista=document.getElementById("listaTarefas");
-lista.innerHTML="";
+listaTarefas.innerHTML="";
 tarefas.forEach((t,i)=>{
-lista.innerHTML+=`<div class="item">${t}
-<button onclick="removerTarefa(${i})">❌</button></div>`;
+listaTarefas.innerHTML+=`
+<div>
+${t}
+<button onclick="removerTarefa(${i})">✔️</button>
+</div>`;
 });
+salvar("tarefas",tarefas);
 }
 
 function addTarefa(){
-const input=document.getElementById("novaTarefa");
-if(!input.value.trim())return;
-tarefas.push(input.value);
-salvar("tarefas",tarefas);
-input.value="";
+const v=novaTarefa.value.trim();
+if(!v)return;
+tarefas.push(v);
+novaTarefa.value="";
 renderTarefas();
 }
 
 function removerTarefa(i){
 tarefas.splice(i,1);
-salvar("tarefas",tarefas);
 renderTarefas();
 }
 
-/* -------- CONSULTAS -------- */
+/* ---------- CONSULTAS ---------- */
 let consultas=carregar("consultas");
 
-function renderConsultas(){
-const lista=document.getElementById("listaConsultas");
-lista.innerHTML="";
-consultas.forEach(c=>{
-lista.innerHTML+=`<div>${c.nome} - ${c.data}</div>`;
-});
-}
-
 function addConsulta(){
-const nome=document.getElementById("nomeConsulta").value;
-const data=document.getElementById("dataConsulta").value;
-if(!nome||!data)return;
-consultas.push({nome,data});
+consultas.push({
+nome:nomeConsulta.value,
+data:dataConsulta.value
+});
 salvar("consultas",consultas);
 renderConsultas();
 }
 
-/* -------- ROTINA -------- */
-let rotinas=carregar("rotinas");
-
-function renderRotina(){
-const lista=document.getElementById("listaRotina");
-lista.innerHTML="";
-rotinas.forEach(r=>{
-lista.innerHTML+=`<div>${r}</div>`;
+function renderConsultas(){
+listaConsultas.innerHTML="";
+consultas.forEach(c=>{
+listaConsultas.innerHTML+=`<div>${c.nome} — ${c.data}</div>`;
 });
 }
 
+/* ---------- ROTINA ---------- */
+let rotinas=carregar("rotinas");
+
 function addRotina(){
-const txt=document.getElementById("rotinaTexto");
-if(!txt.value.trim())return;
-rotinas.push(txt.value);
+rotinas.push(novaRotina.value);
 salvar("rotinas",rotinas);
-txt.value="";
 renderRotina();
 }
 
-/* -------- REMÉDIOS -------- */
-let remedios=carregar("remedios");
-
-function renderRemedios(){
-const lista=document.getElementById("listaRemedios");
-lista.innerHTML="";
-remedios.forEach(r=>{
-lista.innerHTML+=`<div>${r.nome} às ${r.hora}</div>`;
+function renderRotina(){
+listaRotina.innerHTML="";
+rotinas.forEach(r=>{
+listaRotina.innerHTML+=`<div>${r}</div>`;
 });
 }
 
+/* ---------- REMÉDIOS ---------- */
+let remedios=carregar("remedios");
+
 function addRemedio(){
-const nome=document.getElementById("nomeRemedio").value;
-const hora=document.getElementById("horaRemedio").value;
-if(!nome||!hora)return;
-remedios.push({nome,hora});
+remedios.push({
+nome:nomeRemedio.value,
+hora:horaRemedio.value
+});
 salvar("remedios",remedios);
 renderRemedios();
 }
 
-/* -------- INIT -------- */
+function renderRemedios(){
+listaRemedios.innerHTML="";
+remedios.forEach(r=>{
+listaRemedios.innerHTML+=`<div>${r.nome} às ${r.hora}</div>`;
+});
+}
+
+/* ---------- FINANCEIRO PRO (NUBANK STYLE) ---------- */
+let cartoes=carregar("cartoes");
+
+function addCartao(){
+cartoes.push({
+nome:nomeCartao.value,
+total:Number(limiteTotal.value),
+usado:Number(limiteUsado.value)
+});
+salvar("cartoes",cartoes);
+renderCartoes();
+}
+
+function renderCartoes(){
+listaCartoes.innerHTML="";
+
+cartoes.forEach(c=>{
+const perc=(c.usado/c.total)*100;
+
+listaCartoes.innerHTML+=`
+<div style="margin-top:12px">
+<b>${c.nome}</b><br>
+Usado: R$ ${c.usado} / ${c.total}
+
+<div class="barra">
+<div class="progresso" style="width:${perc}%"></div>
+</div>
+</div>`;
+});
+}
+
+/* ---------- INIT ---------- */
 renderTarefas();
 renderConsultas();
 renderRotina();
 renderRemedios();
+renderCartoes();
 
-/* -------- CARDÁPIO -------- */
-
-const dias = [
-"Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"
-];
-
-let cardapio = carregar("cardapio");
-
-function renderCardapio(){
-const area=document.getElementById("cardapioLista");
-area.innerHTML="";
-
-dias.forEach((dia,i)=>{
-const dados = cardapio[i] || {cafe:"",almoco:"",jantar:""};
-
-area.innerHTML+=`
-<div class="card">
-<strong>${dia}</strong>
-
-<input placeholder="Café da manhã"
-value="${dados.cafe}"
-oninput="updateCardapio(${i},'cafe',this.value)">
-
-<input placeholder="Almoço"
-value="${dados.almoco}"
-oninput="updateCardapio(${i},'almoco',this.value)">
-
-<input placeholder="Jantar"
-value="${dados.jantar}"
-oninput="updateCardapio(${i},'jantar',this.value)">
-</div>
-`;
-});
-}
-
-function updateCardapio(i,tipo,valor){
-if(!cardapio[i]) cardapio[i]={};
-cardapio[i][tipo]=valor;
-}
-
-function salvarCardapio(){
-salvar("cardapio",cardapio);
-alert("Cardápio salvo ✅");
-}
-
-renderCardapio();
-
-/* -------- LISTA DE COMPRAS -------- */
-
-function gerarCompras(){
-
-const lista = document.getElementById("listaCompras");
-lista.innerHTML = "";
-
-let itens = [];
-
-cardapio.forEach(dia=>{
-if(!dia) return;
-
-Object.values(dia).forEach(refeicao=>{
-if(refeicao){
-refeicao.split(",").forEach(item=>{
-itens.push(item.trim());
-});
-}
-});
-});
-
-const unicos = [...new Set(itens)];
-
-unicos.forEach(item=>{
-lista.innerHTML += `
-<div class="lista-item">
-🛒 ${item}
-</div>
-`;
-});
-
-}
-
-/* -------- ASSISTENTE INTELIGENTE -------- */
-
-function gerarMensagemAI(){
-
-let msg="🌸 Tudo sob controle hoje.";
-
-if(tarefas.length > 5){
-msg="⚡ Muitas tarefas hoje. Priorize só o essencial.";
-}
-
-if(cardapio.length >=5){
-msg="🍽 Semana bem planejada! Talvez preparar refeições adiantadas ajude.";
-}
-
-if(consultas.length > 0){
-msg="📅 Você tem compromissos agendados. Confira as consultas.";
-}
-
-if(remedios.length > 0){
-msg="💊 Não esqueça seus horários de remédio hoje.";
-}
-
-document.getElementById("mensagemAI").innerText = msg;
-}
-
-gerarMensagemAI();
-/* -------- COPILOTO INTELIGENTE -------- */
-
-function copilotoAI(){
-
-const hora = new Date().getHours();
-let mensagem = "";
-
-/* SAUDAÇÃO POR HORÁRIO */
-if(hora < 12){
-mensagem = "🌅 Bom dia! Comece por algo simples.";
-}
-else if(hora < 18){
-mensagem = "☀️ Boa tarde! Continue no seu ritmo.";
-}
-else{
-mensagem = "🌙 Boa noite! Hora de desacelerar.";
-}
-
-/* DETECTAR SOBRECARGA */
-if(tarefas.length >= 6){
-mensagem = "⚡ Muitas tarefas hoje. Escolha só 3 prioridades.";
-}
-
-/* DETECTAR SEMANA CHEIA */
-if(cardapio.length >= 6){
-mensagem = "🍽 Semana planejada! Preparar refeições antes pode ajudar.";
-}
-
-/* SUGERIR COMPRAS */
-let totalItens = 0;
-cardapio.forEach(d=>{
-if(!d) return;
-Object.values(d).forEach(r=>{
-if(r) totalItens++;
-});
-});
-
-if(totalItens >= 10){
-mensagem = "🛒 Seu cardápio está cheio. Talvez seja dia de compras.";
-}
-
-/* CONSULTAS */
-if(consultas.length > 0){
-mensagem = "📅 Você tem compromissos agendados. Confira as consultas.";
-}
-
-/* REMÉDIOS */
-if(remedios.length > 0){
-mensagem = "💊 Lembrete: mantenha seus horários de remédio.";
-}
-
-document.getElementById("mensagemAI").innerText = mensagem;
-}
-
-/* ATUALIZA AUTOMÁTICO */
-copilotoAI();
-setInterval(copilotoAI, 60000);
-
-/* -------- ASSISTENTE -------- */
-
-function responderAssistente(){
-  const pergunta = document
-    .getElementById("pergunta")
-    .value.toLowerCase();
-
-  const resposta =
-    document.getElementById("mensagemAssistente");
-
-  if(pergunta.includes("cansada")){
-    resposta.innerText =
-      "🌙 Que tal diminuir o ritmo hoje e focar só no essencial?";
-  }
-  else if(pergunta.includes("cardapio")){
-    resposta.innerText =
-      "🍽️ Posso te ajudar a montar o cardápio da semana!";
-  }
-  else if(pergunta.includes("tarefas")){
-    resposta.innerText =
-      "✅ Vamos escolher apenas 3 tarefas principais hoje.";
-  }
-  else{
-    resposta.innerText =
-      "🤖 Estou aprendendo! Fale sobre rotina, tarefas ou cardápio.";
-  }
-}
-/* -------- ASSISTENTE -------- */
-
-function abrirAssistente(){
-mostrarTela("assistente");
-}
-
-function abrirTela(id){
-document.querySelectorAll('.tela')
-.forEach(t=>t.classList.remove('ativa'));
-
-document.getElementById(id)
-.classList.add('ativa');
-}
-
-/* ===== FINANCEIRO INTELIGENTE ===== */
-
-let contas = JSON.parse(localStorage.getItem("contas")) || [];
-
-function salvarContas(){
-localStorage.setItem("contas", JSON.stringify(contas));
-renderFinanceiro();
-}
-
-function addConta(){
-
-let conta = {
-descricao: document.getElementById("finDescricao").value,
-valor: document.getElementById("finValor").value,
-vencimento: document.getElementById("finVencimento").value,
-tipo: document.getElementById("finTipo").value
-};
-
-if(!conta.descricao) return;
-
-contas.push(conta);
-
-document.getElementById("finDescricao").value="";
-document.getElementById("finValor").value="";
-document.getElementById("finVencimento").value="";
-
-salvarContas();
-}
-calcularResumoFinanceiro();
-  
-function removerConta(i){
-contas.splice(i,1);
-salvarContas();
-}
-
-function renderFinanceiro(){
-
-let lista = document.getElementById("listaFinanceiro");
-if(!lista) return;
-
-lista.innerHTML="";
-
-contas.forEach((c,i)=>{
-lista.innerHTML += `
-<div class="item">
-<div>
-<b>${c.descricao}</b><br>
-R$ ${c.valor} • ${c.tipo}<br>
-📅 ${c.vencimento}
-</div>
-<button onclick="removerConta(${i})">❌</button>
-</div>`;
-});
-}
-
-renderFinanceiro();
-
-function calcularResumoFinanceiro(){
-
-let totalMes = 0;
-let fixas = 0;
-let variaveis = 0;
-let hoje = new Date();
-let alertas = "";
-
-contas.forEach(c => {
-
-let valor = Number(c.valor) || 0;
-totalMes += valor;
-
-if(c.tipo === "Conta Fixa")
-fixas += valor;
-else
-variaveis += valor;
-
-if(c.vencimento){
-
-let dataConta = new Date(c.vencimento);
-let dias = (dataConta - hoje)/(1000*60*60*24);
-
-if(dias >= 0 && dias <= 3){
-alertas += `<div class="item" style="background:#ffe8e8">
-⚠️ ${c.descricao} vence em ${Math.ceil(dias)} dias
-</div>`;
-}
-
-}
-
-});
-
-document.getElementById("totalMes").innerText =
-"R$ " + totalMes.toFixed(2);
-
-document.getElementById("totalFixas").innerText =
-"R$ " + fixas.toFixed(2);
-
-document.getElementById("totalVariaveis").innerText =
-"R$ " + variaveis.toFixed(2);
-
-document.getElementById("previsaoSaldo").innerText =
-"R$ " + (-totalMes).toFixed(2);
-
-document.getElementById("alertasFinanceiros").innerHTML =
-alertas || "✅ Nenhum vencimento próximo";
-}
-  
 </script>
 
 </body>
