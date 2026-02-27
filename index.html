@@ -561,54 +561,62 @@ document.getElementById(id)
 .classList.add('ativa');
 }
 
-/* -------- FINANCEIRO -------- */
+/* ===== FINANCEIRO INTELIGENTE ===== */
 
-let contas = carregar("financeiro");
+let contas = JSON.parse(localStorage.getItem("contas")) || [];
+
+function salvarContas(){
+localStorage.setItem("contas", JSON.stringify(contas));
+renderFinanceiro();
+}
+
+function addConta(){
+
+let conta = {
+descricao: document.getElementById("finDescricao").value,
+valor: document.getElementById("finValor").value,
+vencimento: document.getElementById("finVencimento").value,
+tipo: document.getElementById("finTipo").value
+};
+
+if(!conta.descricao) return;
+
+contas.push(conta);
+
+document.getElementById("finDescricao").value="";
+document.getElementById("finValor").value="";
+document.getElementById("finVencimento").value="";
+
+salvarContas();
+}
+
+function removerConta(i){
+contas.splice(i,1);
+salvarContas();
+}
 
 function renderFinanceiro(){
-const lista=document.getElementById("listaFinanceiro");
+
+let lista = document.getElementById("listaFinanceiro");
 if(!lista) return;
 
 lista.innerHTML="";
 
 contas.forEach((c,i)=>{
-lista.innerHTML+=`
-<div class="lista-item">
+lista.innerHTML += `
+<div class="item">
 <div>
-<strong>${c.descricao}</strong><br>
-📅 ${c.data} | 💲 R$ ${c.valor} | ${c.tipo}
+<b>${c.descricao}</b><br>
+R$ ${c.valor} • ${c.tipo}<br>
+📅 ${c.vencimento}
 </div>
 <button onclick="removerConta(${i})">❌</button>
 </div>`;
 });
 }
 
-function addConta(){
-
-const descricao=document.getElementById("descricaoConta").value;
-const data=document.getElementById("dataVencimento").value;
-const valor=document.getElementById("valorConta").value;
-const tipo=document.getElementById("tipoConta").value;
-
-if(!descricao || !data || !valor) return;
-
-contas.push({descricao,data,valor,tipo});
-salvar("financeiro",contas);
-
 renderFinanceiro();
 
-document.getElementById("descricaoConta").value="";
-document.getElementById("dataVencimento").value="";
-document.getElementById("valorConta").value="";
-}
-
-function removerConta(i){
-contas.splice(i,1);
-salvar("financeiro",contas);
-renderFinanceiro();
-}
-
-renderFinanceiro();
 </script>
 
 </body>
