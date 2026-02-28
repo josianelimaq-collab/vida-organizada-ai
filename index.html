@@ -126,12 +126,13 @@ border-radius:10px;
 
 <div id="assistenteAI" class="tela">
   <div class="card" style="margin:15px;">
+    <h3>🤖 Assistente Vida AI</h3>
+    <div id="mensagemAI">
+      Analisando sua rotina...
+    </div>
   </div>
 </div>
   
-<h3>🤖 Assistente Vida AI</h3>
-<div id="mensagemAI">Analisando sua rotina...</div>
-</div>
 <!-- TAREFAS -->
 <div id="tarefas" class="tela ativa">
 <div class="card">
@@ -263,29 +264,12 @@ Calcular metabolismo
 
 </div>
   
-<div id="analiseIA">
-Analisando seus hábitos alimentares...
-</div>
-
 <button class="acao" onclick="gerarPlanoAutomatico()">
 ✨ Gerar plano automático
 </button>
-
-<label>Meta diária de calorias</label>
-<input id="metaCalorias" type="number" placeholder="Ex: 2000">
-
-<div>
-Consumido hoje:
-<b id="caloriasHoje">0 kcal</b>
-</div>
-
-<button class="acao" onclick="sugerirRefeicoesIA()">  
+ 
 ✨ Criar cardápio inteligente do dia
 </button>
-
-<div id="planoIA" style="margin-top:10px;"></div>
-
-</div>  
   
 <div>
 Status:
@@ -792,10 +776,6 @@ function responderAssistente(){
   }
 }
 /* -------- ASSISTENTE -------- */
-
-document.getElementById(id)
-.classList.add('ativa');
-}
 
 /* ===== FINANCEIRO INTELIGENTE ===== */
 
