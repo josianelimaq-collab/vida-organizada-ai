@@ -475,8 +475,8 @@ function mudarTela(id){
   document.querySelectorAll(".tela")
     .forEach(t => t.classList.remove("ativa"));
 
-  document.getElementById(id)
-    .classList.add("ativa");
+  const tela = document.getElementById(id);
+  if(tela) tela.classList.add("ativa");
 }
 
   function trocar(id){
@@ -2094,5 +2094,6 @@ function trocar(id){
 }
 
 </script>
+  
 </body>
 </html>
