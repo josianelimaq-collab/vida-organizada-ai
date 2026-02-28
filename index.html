@@ -222,8 +222,6 @@ Consumido hoje:
 </div>
 
 <button class="acao" onclick="sugerirRefeicoesIA()">
-✨ Criar cardápio inteligente do dia
-</button>
 
 <div id="planoIA" style="margin-top:10px;"></div>
 
@@ -481,6 +479,10 @@ function mudarTela(id){
     .classList.add("ativa");
 }
 
+  function trocar(id){
+  mudarTela(id);
+}
+  
 /* -------- STORAGE -------- */
 function salvar(chave,valor){
 localStorage.setItem(chave,JSON.stringify(valor));
