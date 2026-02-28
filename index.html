@@ -2085,12 +2085,10 @@ renderCalendario
 
 function trocar(id){
 
-  // esconder todas as telas
   document.querySelectorAll(".tela").forEach(t => {
     t.style.display = "none";
   });
 
-  // mostrar a tela clicada
   const tela = document.getElementById(id);
   if(tela){
     tela.style.display = "block";
