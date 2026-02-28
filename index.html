@@ -827,7 +827,7 @@ function removerConta(i){
 contas.splice(i,1);
 salvarContas();
 }
-
+  
 /* RENDER LISTA */
 function renderFinanceiro(){
 
@@ -2080,7 +2080,26 @@ document.addEventListener(
 "DOMContentLoaded",
 renderCalendario
 );
-  
+
+<script>
+
+/* ===== TROCA DE ABAS (ANTI BUG) ===== */
+
+function trocar(id){
+
+  // esconder todas as telas
+  document.querySelectorAll(".tela").forEach(t => {
+    t.style.display = "none";
+  });
+
+  // mostrar a tela clicada
+  const tela = document.getElementById(id);
+  if(tela){
+    tela.style.display = "block";
+  }
+
+}
+
 </script>
 
 </body>
