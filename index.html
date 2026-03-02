@@ -1164,9 +1164,6 @@ const saldo = totalEntradas - totalSaidas;
 
 const saldoEl = safe("saldoAtual");
 
-const saldo = totalEntradas - totalSaidas;
-
-const saldoEl = safe("saldoAtual");
 if(!saldoEl) return;
 
 saldoEl.innerText =
@@ -1181,7 +1178,6 @@ else if(saldo > -1000){
 }
 else{
   saldoEl.style.color = "#ef4444";
-}
 }
 
 /* ===== RECORRÊNCIA AUTOMÁTICA ===== */
