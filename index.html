@@ -470,6 +470,7 @@ Enviar
 <button onclick="trocar('remedios')">💊</button>
 </div>
 
+<script>
 /* -------- TROCAR TELA -------- */
 function mudarTela(id){
   document.querySelectorAll(".tela")
@@ -579,12 +580,6 @@ salvar("remedios",remedios);
 renderRemedios();
 }
 
-/* -------- INIT -------- */
-renderTarefas();
-renderConsultas();
-renderRotina();
-renderRemedios();
-
 /* -------- CARDÁPIO -------- */
 
 const dias = [
@@ -633,8 +628,6 @@ function salvarCardapio(){
 salvar("cardapio",cardapio);
 alert("Cardápio salvo ✅");
 }
-
-renderCardapio();
 
 /* -------- LISTA DE COMPRAS -------- */
 
@@ -694,7 +687,6 @@ msg="💊 Não esqueça seus horários de remédio hoje.";
 document.getElementById("mensagemAI").innerText = msg;
 }
 
-gerarMensagemAI();
 /* -------- COPILOTO INTELIGENTE -------- */
 
 function copilotoAI(){
@@ -750,7 +742,7 @@ document.getElementById("mensagemAI").innerText = mensagem;
 }
 
 /* ATUALIZA AUTOMÁTICO */
-copilotoAI();
+
 setInterval(copilotoAI, 60000);
 
 /* -------- ASSISTENTE -------- */
@@ -809,7 +801,7 @@ descricao,
 valor,
 vencimento,
 tipo,
-status
+paga: status === "sim"
 });
 
 salvarContas();
@@ -892,10 +884,6 @@ document.getElementById("previsaoSaldo").innerText =
 "R$ "+(-totalMes).toFixed(2);
 }
 
-/* INIT */
-renderFinanceiro();
-calcularResumoFinanceiro();
-
 /* ===== FINANCEIRO ===== */
 
 let cartoes = JSON.parse(localStorage.getItem("cartoes") || "[]");
@@ -974,6 +962,13 @@ ${alerta}
 
 document.addEventListener("DOMContentLoaded", renderCartoes);
 
+renderTarefas();
+renderConsultas();
+renderRotina();
+renderRemedios();
+renderCardapio();
+renderFinanceiro();
+
 function togglePago(i){
 
 contas[i].paga = !contas[i].paga;
@@ -1009,7 +1004,8 @@ document.getElementById("gastosPagos").innerText =
 document.getElementById("gastosPendentes").innerText =
 "R$ " + pendentes.toFixed(2);
 
-const saldoEl = document.getElementById("saldoAtual");
+const saldoEl = safe("saldoAtual");
+if(!saldoEl) return;
 
 saldoEl.innerText = "R$ " + saldo.toFixed(2);
 
@@ -1161,14 +1157,15 @@ let totalSaidas = 0;
 entradas.forEach(e=> totalEntradas+=e.valor);
 
 contas.forEach(c=>{
-if(c.status !== "pago"){
+if(c.paga)
 totalSaidas+=Number(c.valor)||0;
 }
 });
 
 const saldo = totalEntradas - totalSaidas;
 
-const saldoEl = document.getElementById("saldoAtual");
+const saldoEl = safe("saldoAtual");
+if(!saldoEl) return;
 
 if(!saldoEl) return;
 
@@ -1440,8 +1437,10 @@ caloriasHoje = total;
 
 localStorage.setItem("caloriasHoje", caloriasHoje);
 
-document.getElementById("caloriasHoje").innerText =
-caloriasHoje + " kcal";
+const elCalorias = safe("caloriasHoje");
+if(elCalorias){
+  elCalorias.innerText = caloriasHoje + " kcal";
+}
 
 analisarMetaCalorica();
 }
@@ -1451,7 +1450,8 @@ analisarMetaCalorica();
 function analisarMetaCalorica(){
 
 const meta = Number(document.getElementById("metaCalorias").value);
-const status = document.getElementById("statusCalorias");
+const status = safe("statusCalorias");
+if(!status) return;
 
 if(!meta) return;
 
@@ -1475,8 +1475,10 @@ aguaHoje += ml;
 
 localStorage.setItem("aguaHoje", aguaHoje);
 
-document.getElementById("aguaHoje").innerText =
-aguaHoje + " ml";
+const aguaEl = safe("aguaHoje");
+if(aguaEl){
+  aguaEl.innerText = aguaHoje + " ml";
+}
 
 analisarAgua();
 }
@@ -1537,7 +1539,12 @@ setInterval(atualizarCaloriasHoje,15000);
 
 /* iniciar valores */
 document.addEventListener("DOMContentLoaded",()=>{
-document.getElementById("aguaHoje").innerText = aguaHoje+" ml";
+
+const aguaEl = safe("aguaHoje");
+if(aguaEl){
+  aguaEl.innerText = aguaHoje+" ml";
+}
+
 atualizarCaloriasHoje();
 });
 
@@ -1835,26 +1842,13 @@ salvar("cardapio",cardapio);
 alert("Cardápio aplicado ✅");
 }
 
+function safe(id){
+  return document.getElementById(id);
+}  
+  
 /* =====================================
    🛡️ PROTEÇÃO ANTI-BUG IA — MODO APP PRO
 ===================================== */
-
-/* ---------- BUSCA SEGURA ---------- */
-function safe(id){
-  const el = document.getElementById(id);
-
-  if(!el){
-    console.warn("Elemento ausente:", id);
-
-    /* cria automaticamente se não existir */
-    const novo = document.createElement("div");
-    novo.id = id;
-    document.body.appendChild(novo);
-    return novo;
-  }
-
-  return el;
-}
 
 /* ---------- EXECUÇÃO SEGURA ---------- */
 function executarSeguro(fn){
@@ -2022,9 +2016,7 @@ salvarTarefasSemana();
 /* render calendário */
 function renderCalendario(){
 
-const area =
-document.getElementById("calendarioSemanal");
-
+const area = safe("calendarioSemanal");
 if(!area) return;
 
 area.innerHTML="";
@@ -2079,20 +2071,20 @@ document.addEventListener(
 renderCalendario
 );
 
-/* ===== TROCA DE ABAS (ANTI BUG) ===== */
+/* ===== PROTEÇÃO GLOBAL ===== */
+function safe(id){
+  const el = document.getElementById(id);
 
-function trocar(id){
-
-  document.querySelectorAll(".tela").forEach(t => {
-    t.style.display = "none";
-  });
-
-  const tela = document.getElementById(id);
-  if(tela){
-    tela.style.display = "block";
+  if(!el){
+    const novo = document.createElement("div");
+    novo.id = id;
+    document.body.appendChild(novo);
+    return novo;
   }
-}
 
+  return el;
+}
+  
 </script>
   
 </body>
