@@ -1004,7 +1004,7 @@ document.getElementById("gastosPagos").innerText =
 document.getElementById("gastosPendentes").innerText =
 "R$ " + pendentes.toFixed(2);
 
-const saldoEl = safe("saldoAtual");
+const saldoEl = document.getElementById("saldoAtual");
 if(!saldoEl) return;
 
 saldoEl.innerText = "R$ " + saldo.toFixed(2);
