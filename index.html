@@ -1156,11 +1156,9 @@ let totalSaidas = 0;
 
 entradas.forEach(e=> totalEntradas+=e.valor);
 
-contas.forEach(c=>{
 if(c.paga)
 totalSaidas+=Number(c.valor)||0;
 }
-});
 
 const saldo = totalEntradas - totalSaidas;
 
