@@ -1840,10 +1840,7 @@ renderCardapio();
 salvar("cardapio",cardapio);
 alert("Cardápio aplicado ✅");
 }
-
-function safe(id){
-  return document.getElementById(id);
-}  
+  
   
 /* =====================================
    🛡️ PROTEÇÃO ANTI-BUG IA — MODO APP PRO
@@ -1920,7 +1917,7 @@ function restaurarElementosIA(){
 
 /* ---------- REINICIAR AO TROCAR DE ABA ---------- */
 
-const trocarOriginal = trocar;
+const trocarOriginal = window.trocar;
 
 trocar = function(id){
   trocarOriginal(id);
