@@ -1164,20 +1164,24 @@ const saldo = totalEntradas - totalSaidas;
 
 const saldoEl = safe("saldoAtual");
 
+const saldo = totalEntradas - totalSaidas;
+
+const saldoEl = safe("saldoAtual");
+if(!saldoEl) return;
+
 saldoEl.innerText =
 "R$ " + saldo.toFixed(2);
 
 /* cores banco */
 if(saldo >= 0){
-saldoEl.style.color="#16a34a";
+  saldoEl.style.color = "#16a34a";
 }
-else if(saldo>-1000){
-saldoEl.style.color="#f59e0b";
+else if(saldo > -1000){
+  saldoEl.style.color = "#f59e0b";
 }
 else{
-saldoEl.style.color="#ef4444";
+  saldoEl.style.color = "#ef4444";
 }
-
 }
 
 /* ===== RECORRÊNCIA AUTOMÁTICA ===== */
